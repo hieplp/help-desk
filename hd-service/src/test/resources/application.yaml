@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:helpdesk;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+
+app:
+  jwt:
+    secret: test-only-jwt-secret-must-be-32b!!
+    ttl: 8h

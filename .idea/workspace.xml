@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ae2a97f1-cd19-4ddf-8587-604d71823da1" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/hd-service">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="package-info" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;hieplp&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/hieplp/help-desk.git&quot;,
+    &quot;accountId&quot;: &quot;861e7d27-233f-492e-8807-25b5fb5af77d&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="2.4186108126125503E-298" />
+      <entry key="S5" value="1.644917401183635E-119" />
+      <entry key="S10" value="7.654418591772795E-60" />
+      <entry key="S30" value="4.8949878420140195E-20" />
+      <entry key="S60" value="4.4167121409955483E-10" />
+      <entry key="M2" value="4.2012340072734164E-5" />
+      <entry key="M5" value="0.04083841058831176" />
+      <entry key="M10" value="0.44171815368017203" />
+      <entry key="M15" value="1.2158033382582996" />
+      <entry key="M30" value="5.154740939199656" />
+      <entry key="H1" value="13.89635623223559" />
+      <entry key="H2" value="26.709791956833033" />
+      <entry key="H4" value="39.95560185773126" />
+      <entry key="D1" value="58.86167616911401" />
+      <entry key="W1" value="63.23112820404141" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="1.000000000139405" />
+      <entry key="MS500" value="1.0106869945617383" />
+      <entry key="S2" value="1.321524370857651" />
+      <entry key="S5" value="1.6351635375293987" />
+      <entry key="S10" value="1.7969714784917956" />
+      <entry key="S30" value="1.9271489016449954" />
+      <entry key="S60" value="1.9648949712862023" />
+      <entry key="M2" value="2.0262032613552163" />
+      <entry key="M5" value="2.3510293592672227" />
+      <entry key="M10" value="3.238557237966087" />
+      <entry key="M15" value="4.521819908722003" />
+      <entry key="M30" value="10.310457072688292" />
+      <entry key="H1" value="22.758870166376393" />
+      <entry key="H2" value="40.603926969514994" />
+      <entry key="H4" value="58.523141975928105" />
+      <entry key="D1" value="83.36665522205328" />
+      <entry key="W1" value="89.0102440287031" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.5600267402917591E-6" />
+      <entry key="MS500" value="0.07369442548680429" />
+      <entry key="S2" value="0.7747033163477073" />
+      <entry key="S5" value="1.3507972271258697" />
+      <entry key="S10" value="1.6399877087789" />
+      <entry key="S30" value="1.8710473579077922" />
+      <entry key="S60" value="1.9363183462635636" />
+      <entry key="M2" value="2.011615002576202" />
+      <entry key="M5" value="2.385268663969228" />
+      <entry key="M10" value="3.6756358363791475" />
+      <entry key="M15" value="5.733148726798739" />
+      <entry key="M30" value="15.459893909390962" />
+      <entry key="H1" value="36.64949050143319" />
+      <entry key="H2" value="67.30886237053991" />
+      <entry key="H4" value="98.47539480768322" />
+      <entry key="D1" value="142.22757178466378" />
+      <entry key="W1" value="152.24125734998958" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3JgeZbNSpllVvXiCK7H8YIFqIUd" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build hd-service.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "Spring Boot.HdServiceApplication.executor": "Run",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/hieplp/Projects/training/help-desk",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.jshint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.jshint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "to.speed.mode.migration.done": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/hd-service/docs/plans" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="HdServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="hd-service.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="dev.hieplp.helpdesk.HdServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-34e2839f716b-intellij.indexing.shared.core-IU-262.9437.185" />
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.9437.185" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ae2a97f1-cd19-4ddf-8587-604d71823da1" name="Changes" comment="" />
+      <created>1790087195741</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1790087195741</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
