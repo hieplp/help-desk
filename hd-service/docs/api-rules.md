@@ -12,12 +12,12 @@ Every endpoint in hd-service follows these rules. A new endpoint does not invent
 
 ## Methods
 
-| Method | Use | Success |
-| --- | --- | --- |
-| `GET` | Read one resource or a collection. No body. No side effects. | `200` |
-| `POST` | Create a resource. | `201`, body is the created resource |
-| `PATCH` | Partial update. Absent field means unchanged. `null` clears a nullable field. | `200`, body is the updated resource |
-| `DELETE` | Remove. | `204`, empty body |
+| Method   | Use                                                                           | Success                             |
+|----------|-------------------------------------------------------------------------------|-------------------------------------|
+| `GET`    | Read one resource or a collection. No body. No side effects.                  | `200`                               |
+| `POST`   | Create a resource.                                                            | `201`, body is the created resource |
+| `PATCH`  | Partial update. Absent field means unchanged. `null` clears a nullable field. | `200`, body is the updated resource |
+| `DELETE` | Remove.                                                                       | `204`, empty body                   |
 
 - `PUT` is not used.
 - An empty `PATCH` body is `400`.
@@ -39,27 +39,25 @@ Every endpoint in hd-service follows these rules. A new endpoint does not invent
 
 ## Status
 
-- `400` malformed or invalid input
+- `400` malformed or invalid input, including a non-JSON body
 - `401` not authenticated
 - `403` authenticated, not allowed
 - `404` missing. Also `404` when the caller must not learn that the id exists
+- `405` method not supported on that path
 - `409` conflict with current state, including a unique constraint
-- `415` body is not JSON
 - `500` unexpected. No stack trace, no SQL, no internal class names
 
-## Errors
-
-Every failure uses this body. `fields` is present only for input errors.
+Every failure uses this body:
 
 ```json
 {
-  "code": "validation_failed",
-  "message": "Request is invalid",
-  "fields": { "name": "must not be blank" }
+  "code": "bad_request",
+  "message": "Request is invalid"
 }
 ```
 
-- `code` is stable `lower_snake_case`. Clients branch on `code`, not on `message`.
+- `code` is the HTTP status name in `lower_snake_case` (`bad_request`, `unauthorized`, `not_found`, …). Clients branch
+  on `code`, not on `message`.
 - `message` is one short sentence.
 - No per-endpoint error shape.
 
@@ -78,10 +76,16 @@ Every failure uses this body. `fields` is present only for input errors.
 - Default order is newest `updatedAt` first, unless that endpoint documents another order.
 - A filter is a query parameter named exactly as the field. An unknown parameter is `400`.
 - Sort, when an endpoint supports it, is one field: `sort=field` or `sort=-field`.
-- Do not paginate until a collection is slow. The first paginated collection sets the shape, and every later one uses it: `page` (1-based), `size` (default 20, max 100).
+- Do not paginate until a collection is slow. The first paginated collection sets the shape, and every later one uses
+  it: `page` (1-based), `size` (default 20, max 100).
 
 ```json
-{ "items": [], "page": 1, "size": 20, "total": 0 }
+{
+  "items": [],
+  "page": 1,
+  "size": 20,
+  "total": 0
+}
 ```
 
 ## Authorization

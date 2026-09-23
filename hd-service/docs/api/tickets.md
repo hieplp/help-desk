@@ -1,16 +1,19 @@
 # Tickets
 
-Conventions, error body, and status codes: `../api-rules.md`.
+Not implemented yet — this is the spec. Conventions, error body, and status codes: `../api-rules.md`.
 
-Ticket fields: `id`, `title`, `description`, `category`, `priority`, `status`, `requesterId`, `assigneeId` (nullable), `createdAt`, `updatedAt`.
+Ticket fields: `id`, `title`, `description`, `category`, `priority`, `status`, `requesterId`, `assigneeId` (nullable),
+`createdAt`, `updatedAt`.
 
-Enums: `category` = `hardware` `software` `access` `other`; `priority` = `low` `medium` `high`; `status` = `open` `in_progress` `resolved` `closed`.
+Enums: `category` = `hardware` `software` `access` `other`; `priority` = `low` `medium` `high`; `status` = `open`
+`in_progress` `resolved` `closed`.
 
 List items omit `description`. Detail adds `description` and `comments`.
 
 ## `POST /tickets`
 
-Any authenticated caller. `requesterId` is the token subject — never taken from the body. `status` starts `open`, `assigneeId` starts `null`; the caller cannot set either.
+Any authenticated caller. `requesterId` is the token subject — never taken from the body. `status` starts `open`,
+`assigneeId` starts `null`; the caller cannot set either.
 
 ```json
 {
@@ -23,7 +26,8 @@ Any authenticated caller. `requesterId` is the token subject — never taken fro
 
 `201`: the created ticket.
 
-Validation: `title` and `description` required, trimmed, non-empty; title max 120, description max 4000. `category` and `priority` must be known values.
+Validation: `title` and `description` required, trimmed, non-empty; title max 120, description max 4000. `category` and
+`priority` must be known values.
 
 ## `GET /tickets?status=`
 

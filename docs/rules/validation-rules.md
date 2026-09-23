@@ -9,7 +9,7 @@ Server-side input validation. Matches `docs/api-rules.md`. Client validation is 
 - Unknown fields in a request body are rejected → `400`.
 - Ids are integers. Non-integer or negative → `400`.
 - Enum values must match exactly, lowercase. Anything else → `400`.
-- Every failure → `400` with `{ "error": "message" }`. One message, first failure wins.
+- Every failure → `400` with `{ "code": "bad_request", "message": "..." }`. One message, first failure wins.
 
 ## Field limits
 

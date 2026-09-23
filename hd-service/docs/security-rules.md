@@ -1,8 +1,10 @@
 # Security rules
 
-Every endpoint follows these rules. HTTP status and the error body stay in `api-rules.md`. This file is how authentication is built, and what must not leak.
+Every endpoint follows these rules. HTTP status and the error body stay in `api-rules.md`. This file is how
+authentication is built, and what must not leak.
 
-Code lives in `config`. Controllers do not read the `Authorization` header.
+Code lives in `security/` (`JwtService`, `JwtAuthFilter`, `ApiAuthenticationEntryPoint`); wiring in
+`config/SecurityConfig`. Controllers do not read the `Authorization` header.
 
 ## Authentication
 
@@ -10,16 +12,18 @@ Code lives in `config`. Controllers do not read the `Authorization` header.
 - A protected call sends `Authorization: Bearer <token>`.
 - Missing, expired, malformed, or wrongly signed token is `401`.
 - Logout is the client discarding the token. No logout endpoint until a token must be revoked.
-- Login is the only public write. Every other endpoint is protected unless this file lists it as public.
+- Login is the only public write. Public reads: `/v3/api-docs/**`, `/swagger-ui/**`, `/swagger-ui.html`. Every other
+  endpoint is protected.
 - A failed login is one `401`. Same message for an unknown account and a wrong password.
 - The caller is the token subject. Never accept a caller id from the body or the query.
 
 ## Token
 
-- Sign with one algorithm only. Reject every other algorithm, including `none`.
-- Claims are `sub` (user id), `role`, and `exp`. Nothing else.
-- Expiry is configured. Default is 8 hours.
-- The signing secret comes from the environment. It is not in git, not in `application.yaml`, and not in logs.
+- HS256 only (`MacAlgorithm.HS256`). The decoder rejects every other algorithm, including `none`.
+- Claims are `sub` (user id as a string), `role`, and `exp`. Nothing else.
+- TTL is `app.jwt.ttl`, default `8h`, in `application.yaml` — not a secret.
+- The signing secret is `JWT_SECRET` from the environment, minimum 32 bytes or the app refuses to start. It is not in
+  git and not in logs. `application.yaml` carries a dev-only default; never commit a real one.
 - Put the token in the login response body only. Never in a URL, a log line, or an error.
 
 ## Passwords
@@ -35,7 +39,8 @@ Code lives in `config`. Controllers do not read the `Authorization` header.
 - A role check on the controller is not enough. The service checks again.
 - Each endpoint states which roles may call it, and which rows those roles may see.
 - A caller cannot widen that scope by passing another id.
-- Use `404`, not `403`, when `403` would confirm the id exists. `403` is for an authenticated caller who may know the resource and still may not act.
+- Use `404`, not `403`, when `403` would confirm the id exists. `403` is for an authenticated caller who may know the
+  resource and still may not act.
 
 ## Browser and transport
 

@@ -1,6 +1,6 @@
 # hd-service
 
-Spring Boot 4.1.1 REST API. Java 25, Gradle Kotlin DSL, PostgreSQL, Lombok. JSON only, no views.
+Spring Boot 4.1.1 REST API. Java 25, Gradle Kotlin DSL, SQLite, Lombok. JSON only, no views.
 
 ## Commands
 
@@ -13,14 +13,15 @@ Spring Boot 4.1.1 REST API. Java 25, Gradle Kotlin DSL, PostgreSQL, Lombok. JSON
 ## Stack
 
 - `spring-boot-starter-webmvc` — REST controllers
-- `spring-boot-starter-data-jpa` + PostgreSQL — persistence
+- `spring-boot-starter-data-jpa` + SQLite — persistence
 - `spring-boot-starter-security` — JWT auth
 - `spring-boot-starter-validation` — bean validation
 - Lombok — `compileOnly` + `annotationProcessor`, both already wired
 
 ## Structure
 
-Layer packages under `dev.hieplp.helpdesk`: `controller` → `service` → `repository` → `model`. `dto` crosses the HTTP boundary; `config` holds security/JWT; `exception` holds the error handler. Full rules: `docs/project-structure.md`.
+Layer packages under `dev.hieplp.helpdesk`: `controller` → `service` → `repository` → `model`. `dto` crosses the HTTP
+boundary; `config` holds security/JWT; `exception` holds the error handler. Full rules: `docs/project-structure.md`.
 
 - Controllers never touch repositories; repositories never call services.
 - Never return an entity from a controller — map to `dto`.
@@ -29,7 +30,7 @@ Layer packages under `dev.hieplp.helpdesk`: `controller` → `service` → `repo
 
 ## Spec
 
-- `docs/api-rules.md` — endpoints, enums, error body `{ "error": "message" }`.
+- `docs/api-rules.md` — endpoints, enums, error body `{ "code": "...", "message": "..." }`.
 - `docs/security-rules.md` — JWT, roles, access rules.
 - `docs/database.md` — schema.
 - `../docs/rules/validation-rules.md` — input limits.
@@ -37,6 +38,7 @@ Layer packages under `dev.hieplp.helpdesk`: `controller` → `service` → `repo
 ## Rules
 
 - Auth is JWT (`Authorization: Bearer`), parsed in `config`. Controllers read the authenticated caller, not the header.
-- Errors: `400` bad input, `401` bad/missing token, `403` wrong role, `404` missing — always `{ "error": "..." }`.
+- Errors: `400` bad input, `401` bad/missing token, `403` wrong role, `404` missing — always
+  `{ "code": "...", "message": "..." }`.
 - `static/` and `templates/` stay empty.
 - Commits follow `../docs/rules/git-commit-rules.md`.

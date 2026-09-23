@@ -20,29 +20,37 @@ hd-service/
 
 `build/`, `.gradle/`, `bin/`, `.idea/`, and the Eclipse files are generated. Ignore them.
 
-`static/` and `templates/` stay empty.
+`templates/` and `static/` stay empty — a REST API has no view layer. `db/migration/` is not used: `ddl-auto: update`,
+no Flyway.
 
 ## Code
 
 ```
 src/main/java/dev/hieplp/helpdesk/
   HdServiceApplication.java
+  config/         SecurityConfig, SeedUsers
   controller/     one REST controller per resource
-  service/        rules: who may do what, status changes
-  repository/     Spring Data interfaces, one per model
-  model/          JPA entities
-  dto/            request and response types
-  config/         security, JWT, CORS
-  exception/      error body and the handler
+  service/        rules: who may do what, status changes; impl/ for implementations
+  repository/     Spring Data interfaces, one per entity
+  model/
+    entity/       JPA entities
+    dto/          request and response types
+    enums/        enums stored as lowercase names
+  exception/      ApiException and the handler
+  security/       JwtService, JwtAuthFilter
+  common/         shared helpers (MaxBytes validator)
 ```
 
-- A request enters `controller`, calls `service`, which uses `repository` and `model`.
+- A request enters `controller`, calls `service`, which uses `repository` and `model/entity`.
 - Controllers do not touch repositories.
 - Repositories do not call services.
-- `dto` is what crosses the HTTP boundary. `model` is what is stored. Do not return an entity from a controller.
-- JWT parsing stays in `config`. Controllers read the authenticated caller; they do not read the header.
-- One class per resource in each layer (`TicketController`, `TicketService`, `TicketRepository`, `Ticket`). No generic base classes.
-- Comments are a `model` and methods on the ticket controller and service, not a second stack, until that file is doing two jobs.
+- `model/dto` is what crosses the HTTP boundary. `model/entity` is what is stored. Do not return an entity from a
+  controller.
+- JWT parsing stays in `security`. Controllers read the authenticated caller; they do not read the header.
+- One class per resource in each layer (`TicketController`, `TicketService`, `TicketRepository`, `Ticket`). No generic
+  base classes.
+- Comments are a `model` and methods on the ticket controller and service, not a second stack, until that file is doing
+  two jobs.
 
 ## Tests
 
