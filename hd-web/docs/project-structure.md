@@ -34,6 +34,8 @@ src/
         schema.ts
         components/
         hooks/
+    tickets/
+      new/            create-ticket page + form/hook/schema
   api/
     client.ts         fetch wrapper; all HTTP goes here
   components/         shared UI
