@@ -1,5 +1,5 @@
 # Users
 
-Not implemented yet — this is the spec. Client call: `api.get('/users')` for the agent assign dropdown. Contract: `../../hd-service/docs/api/users.md`.
+`api.get('/users')` — agent only; the requester never calls it (403). Used by the `/users` page and, later, the ticket assign dropdown. Contract: `../../hd-service/docs/api/users.md`.
 
-Passwords never leave the server. Requester must not call it.
+Passwords never leave the server.
