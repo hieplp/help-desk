@@ -1,7 +1,6 @@
 package dev.hieplp.helpdesk.controller;
 
 import dev.hieplp.helpdesk.model.dto.UserResponse;
-import dev.hieplp.helpdesk.security.CurrentUser;
 import dev.hieplp.helpdesk.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +17,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<UserResponse> list(@CurrentUser Long userId) {
-        return userService.listForCaller(userId);
+    public List<UserResponse> list() {
+        return userService.list();
     }
 
 }
