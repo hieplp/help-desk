@@ -21,6 +21,15 @@ export default function Header() {
         <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
           {session && (
             <Link
+              to="/tickets"
+              className="nav-link"
+              activeProps={{ className: 'nav-link is-active' }}
+            >
+              Tickets
+            </Link>
+          )}
+          {session && (
+            <Link
               to="/tickets/new"
               className="nav-link"
               activeProps={{ className: 'nav-link is-active' }}
