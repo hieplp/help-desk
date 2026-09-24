@@ -1,6 +1,8 @@
 package dev.hieplp.helpdesk.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import dev.hieplp.helpdesk.model.enums.Role;
+import dev.hieplp.helpdesk.security.ApiAccessDeniedHandler;
 import dev.hieplp.helpdesk.security.ApiAuthenticationEntryPoint;
 import dev.hieplp.helpdesk.security.JwtAuthFilter;
 import dev.hieplp.helpdesk.security.JwtService;
@@ -65,8 +67,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users").hasAuthority(Role.AGENT.toJson())
                         .anyRequest().authenticated())
-                .exceptionHandling(e -> e.authenticationEntryPoint(new ApiAuthenticationEntryPoint(objectMapper)))
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint(new ApiAuthenticationEntryPoint(objectMapper))
+                        .accessDeniedHandler(new ApiAccessDeniedHandler(objectMapper)))
                 .addFilterBefore(new JwtAuthFilter(jwtService), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
