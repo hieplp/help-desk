@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -26,7 +27,8 @@ public class ApiExceptionHandler {
     @ExceptionHandler({
             HttpMessageNotReadableException.class,
             HttpMediaTypeNotSupportedException.class,
-            MethodArgumentNotValidException.class
+            MethodArgumentNotValidException.class,
+            MethodArgumentTypeMismatchException.class
     })
     ResponseEntity<ErrorResponse> badRequest(Exception e) {
         return body(HttpStatus.BAD_REQUEST, "Request is invalid");
