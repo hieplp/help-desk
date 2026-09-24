@@ -6,8 +6,8 @@ export default function Header() {
   const session = useSession((s) => s.session)
   const navigate = useNavigate()
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--line)] bg-[var(--header-bg)] px-4 backdrop-blur-lg">
-      <nav className="page-wrap flex items-center gap-x-3 py-3 sm:py-4">
+    <header className="sticky top-0 z-50 border-b border-[var(--line)] bg-[var(--header-bg)] backdrop-blur-lg">
+      <nav className="page-wrap flex items-center gap-x-3 py-3">
         <h2 className="m-0 flex-shrink-0 text-base font-semibold tracking-tight">
           <Link
             to="/"
@@ -18,12 +18,12 @@ export default function Header() {
           </Link>
         </h2>
 
-        <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
+        <div className="nav-scroll ml-auto flex min-w-0 items-center gap-1.5 sm:gap-2">
           {session && (
             <Link
               to="/tickets"
-              className="nav-link"
-              activeProps={{ className: 'nav-link is-active' }}
+              className="nav-pill"
+              activeProps={{ className: 'nav-pill is-active' }}
             >
               Tickets
             </Link>
@@ -31,8 +31,9 @@ export default function Header() {
           {session && (
             <Link
               to="/tickets/new"
-              className="nav-link"
-              activeProps={{ className: 'nav-link is-active' }}
+              className="nav-pill hidden sm:inline-flex"
+              activeOptions={{ exact: true }}
+              activeProps={{ className: 'nav-pill is-active' }}
             >
               New ticket
             </Link>
@@ -40,20 +41,20 @@ export default function Header() {
           {session?.user.role === 'agent' && (
             <Link
               to="/users"
-              className="nav-link"
-              activeProps={{ className: 'nav-link is-active' }}
+              className="nav-pill"
+              activeProps={{ className: 'nav-pill is-active' }}
             >
               Users
             </Link>
           )}
           {session ? (
             <>
-              <span className="demo-pill">
+              <span className="demo-pill hidden whitespace-nowrap sm:inline-flex">
                 {session.user.name} · {session.user.role}
               </span>
               <button
                 type="button"
-                className="nav-link cursor-pointer border-0 bg-transparent p-0 font-sans text-sm font-semibold"
+                className="nav-pill cursor-pointer font-sans"
                 onClick={() => {
                   setSession(null)
                   navigate({ to: '/login' })
@@ -65,8 +66,8 @@ export default function Header() {
           ) : (
             <Link
               to="/login"
-              className="nav-link"
-              activeProps={{ className: 'nav-link is-active' }}
+              className="nav-pill"
+              activeProps={{ className: 'nav-pill is-active' }}
             >
               Log in
             </Link>
