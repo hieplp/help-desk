@@ -38,7 +38,7 @@ class AuthLoginTests {
 
     @Test
     void loginReturnsTokenAndUser() throws Exception {
-        for (String email : new String[]{"a@b.co", "A@B.co"}) {
+        for (String email : new String[]{"agent@b.co", "AGENT@b.co"}) {
             MvcResult result = login(email, "secret");
             assertThat(result.getResponse().getStatus()).isEqualTo(200);
             JsonNode body = objectMapper.readTree(result.getResponse().getContentAsString());
@@ -47,7 +47,7 @@ class AuthLoginTests {
             assertThat(token).isNotBlank();
             assertThat(body.get("token").get("expiresAt").asString())
                     .isEqualTo(Instant.ofEpochSecond(claims(token).get("exp").asLong()).toString());
-            assertThat(body.get("user").get("email").asString()).isEqualTo("a@b.co");
+            assertThat(body.get("user").get("email").asString()).isEqualTo("agent@b.co");
             assertThat(body.get("user").get("role").asString()).isEqualTo("agent");
             assertThat(body.toString()).doesNotContain("passwordHash");
         }
@@ -55,7 +55,7 @@ class AuthLoginTests {
 
     @Test
     void badCredentialsAreOne401() throws Exception {
-        for (String[] creds : new String[][]{{"a@b.co", "wrong"}, {"nobody@b.co", "secret"}, {" nobody@b.co ", "secret"}}) {
+        for (String[] creds : new String[][]{{"agent@b.co", "wrong"}, {"nobody@b.co", "secret"}, {" nobody@b.co ", "secret"}}) {
             MvcResult result = login(creds[0], creds[1]);
             assertThat(result.getResponse().getStatus()).isEqualTo(401);
             JsonNode body = objectMapper.readTree(result.getResponse().getContentAsString());
@@ -119,7 +119,7 @@ class AuthLoginTests {
                 .andExpect(jsonPath("$.code").value("unauthorized"))
                 .andExpect(jsonPath("$.message").value("Unauthorized"));
 
-        MvcResult result = login("a@b.co", "secret");
+        MvcResult result = login("agent@b.co", "secret");
         String token = objectMapper.readTree(result.getResponse().getContentAsString())
                 .get("token").get("value").asString();
         MvcResult protectedResult = mvc.perform(get("/users").header("Authorization", "Bearer " + token))

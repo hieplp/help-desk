@@ -17,6 +17,22 @@ Code lives in `security/` (`JwtService`, `JwtAuthFilter`, `ApiAuthenticationEntr
 - A failed login is one `401`. Same message for an unknown account and a wrong password.
 - The caller is the token subject. Never accept a caller id from the body or the query.
 
+## Current caller
+
+- A controller reads the caller id with `@CurrentUser` on a `Long` parameter:
+
+  ```java
+  @PostMapping("/tickets")
+  TicketResponse create(@CurrentUser Long userId, @Valid @RequestBody CreateTicketRequest body) { ... }
+  ```
+
+- `@CurrentUser` (in `security/`) wraps `@AuthenticationPrincipal`. The principal is the user id `JwtAuthFilter`
+  sets from the token subject.
+- Unauthenticated calls never reach the controller — the entry point answers `401` first, so the id is never null
+  on a protected route.
+- Services that need the caller id take it as a parameter from the controller. They do not read
+  `SecurityContextHolder` themselves.
+
 ## Token
 
 - HS256 only (`MacAlgorithm.HS256`). The decoder rejects every other algorithm, including `none`.
