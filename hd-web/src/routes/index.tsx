@@ -18,7 +18,11 @@ function Home() {
             ? `Signed in as ${session.user.role}.`
             : 'Sign in to manage your tickets.'}
         </p>
-        {!session && (
+        {session ? (
+          <Link to="/tickets/new" className="demo-button mt-6 no-underline">
+            New ticket
+          </Link>
+        ) : (
           <Link to="/login" className="demo-button mt-6 no-underline">
             Sign in
           </Link>
