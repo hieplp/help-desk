@@ -12,4 +12,8 @@ public enum Role {
     public String toJson() {
         return name().toLowerCase(Locale.ROOT);
     }
+
+    public static Role fromJson(String value) {
+        return valueOf(value.toUpperCase(Locale.ROOT));
+    }
 }
