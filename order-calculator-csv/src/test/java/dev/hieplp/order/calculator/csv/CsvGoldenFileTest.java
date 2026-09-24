@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -25,6 +24,10 @@ class CsvGoldenFileTest {
 
     @TempDir
     Path dir;
+
+    private static Path resource(String name) throws URISyntaxException {
+        return Path.of(CsvGoldenFileTest.class.getResource("/" + name).toURI());
+    }
 
     @Test
     void csvToCsvProducesEnrichedRowsAndSummaryRow() throws Exception {
@@ -46,9 +49,5 @@ class CsvGoldenFileTest {
         assertEquals(new BigDecimal("35.49"), result.orderTotalBeforeTax());
         assertEquals(new BigDecimal("39.44"), result.orderTotalAfterTax());
         assertEquals(Files.readAllLines(resource("expected.csv")), Files.readAllLines(output));
-    }
-
-    private static Path resource(String name) throws URISyntaxException {
-        return Path.of(CsvGoldenFileTest.class.getResource("/" + name).toURI());
     }
 }

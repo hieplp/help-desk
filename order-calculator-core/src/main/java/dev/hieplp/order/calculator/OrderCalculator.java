@@ -162,7 +162,9 @@ public final class OrderCalculator {
             switch (col) {
                 case OutputColumn.PassThrough p -> cells.add(CellValue.text(text(row, p.inputName())));
                 case OutputColumn.Computed c -> cells.add(CellValue.number(c.type().pick(beforeOut, afterOut)));
-                case OutputColumn.Custom cu -> cells.add(cu.function().compute(view));
+                case OutputColumn.Custom cu -> cells.add(Objects.requireNonNull(
+                        cu.function().compute(view),
+                        "computed column '" + cu.outputName() + "' returned null"));
             }
         }
         return cells;
@@ -208,8 +210,6 @@ public final class OrderCalculator {
         }
         sink.writeRow(cells);
     }
-
-    // ---- sink ----
 
     private static String message(RuntimeException e) {
         String msg = e.getMessage();

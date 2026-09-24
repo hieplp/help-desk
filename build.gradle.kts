@@ -17,11 +17,15 @@ subprojects {
             languageVersion.set(JavaLanguageVersion.of(21))
         }
         withSourcesJar()
+        withJavadocJar()
     }
 
     tasks.withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
+        // -classfile: dependency jars carry annotations we can't resolve
+        // (e.g. commons-csv's SuppressFBWarnings) — not our code's problem.
         options.compilerArgs.add("-Xlint:all")
+        options.compilerArgs.add("-Xlint:-classfile")
     }
 
     tasks.withType<Test>().configureEach {

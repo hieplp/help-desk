@@ -49,8 +49,16 @@ public final class Excel {
 
     /**
      * Read options for xlsx sources.
+     *
+     * @param sheetIndex      0-based sheet position (used when {@code sheetName} is null)
+     * @param sheetName       sheet lookup by name; wins over {@code sheetIndex}
+     * @param headerRowIndex  0-based index of the header row (rows above are skipped)
+     * @param strictBlankRows false (default): first fully blank row ends the data
+     *                        region; true: a blank row inside the data region is a
+     *                        row error instead
      */
-    public record SourceConfig(int sheetIndex, String sheetName, int headerRowIndex) {
+    public record SourceConfig(int sheetIndex, String sheetName, int headerRowIndex,
+                               boolean strictBlankRows) {
         public SourceConfig {
             if (sheetIndex < 0) {
                 throw new IllegalArgumentException("sheetIndex must be >= 0");
@@ -60,16 +68,24 @@ public final class Excel {
             }
         }
 
+        public SourceConfig(int sheetIndex, String sheetName, int headerRowIndex) {
+            this(sheetIndex, sheetName, headerRowIndex, false);
+        }
+
         public static SourceConfig defaults() {
             return new SourceConfig(0, null, 0);
         }
 
         public SourceConfig sheetName(String name) {
-            return new SourceConfig(sheetIndex, name, headerRowIndex);
+            return new SourceConfig(sheetIndex, name, headerRowIndex, strictBlankRows);
         }
 
         public SourceConfig headerRowIndex(int index) {
-            return new SourceConfig(sheetIndex, sheetName, index);
+            return new SourceConfig(sheetIndex, sheetName, index, strictBlankRows);
+        }
+
+        public SourceConfig strictBlankRows(boolean value) {
+            return new SourceConfig(sheetIndex, sheetName, headerRowIndex, value);
         }
     }
 

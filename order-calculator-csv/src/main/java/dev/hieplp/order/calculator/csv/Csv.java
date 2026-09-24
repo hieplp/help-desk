@@ -32,7 +32,11 @@ public final class Csv {
     }
 
     public static TabularSource source(Path path, Charset charset) {
-        return new CsvTabularSource(path, charset, DEFAULT_FORMAT);
+        return source(path, charset, DEFAULT_FORMAT);
+    }
+
+    public static TabularSource source(Path path, Charset charset, CSVFormat format) {
+        return new CsvTabularSource(path, charset, format);
     }
 
     public static TabularSource source(Reader reader) {
@@ -48,7 +52,11 @@ public final class Csv {
     }
 
     public static TabularSink sink(Path path, Charset charset) {
-        return new CsvTabularSink(path, charset, DEFAULT_FORMAT);
+        return sink(path, charset, DEFAULT_FORMAT);
+    }
+
+    public static TabularSink sink(Path path, Charset charset, CSVFormat format) {
+        return new CsvTabularSink(path, charset, format);
     }
 
     public static TabularSink sink(Writer writer) {

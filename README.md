@@ -141,8 +141,16 @@ Excel.sink(out, new Excel.SinkConfig("Totals"));
 
 CSV defaults: header row, `,` delimiter, `"` quoting, trimmed cells, UTF-8.
 Excel defaults: first sheet, header row 0, data ends at the first fully blank
-row; writes stream via SXSSF (constant memory on huge sheets); computed columns
-are written as real numeric cells.
+row (`strictBlankRows(true)` on `SourceConfig` turns a blank row into a row
+error instead); reads stream row-by-row through the POI event model and writes
+via SXSSF — constant memory in row count both ways; computed columns are
+written as real numeric cells.
+
+One caveat worth knowing: pass-through cells always travel as *text*. In a
+CSV → xlsx file, numeric-looking columns are therefore stored as text cells —
+re-reading that file treats them as numbers-stored-as-text (a row error, per
+the spec). Chained pipelines should keep role columns numeric or re-export
+from the original input.
 
 ## Customizing output
 

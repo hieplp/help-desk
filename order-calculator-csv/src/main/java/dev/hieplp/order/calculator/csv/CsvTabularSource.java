@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
@@ -64,7 +65,8 @@ final class CsvTabularSource implements TabularSource {
 
     @Override
     public Stream<TabularRow> rows() {
-        return parser().stream().map(CsvTabularRow::new);
+        int fieldCount = parser().getHeaderNames().size();
+        return parser().stream().map(r -> new CsvTabularRow(r, fieldCount));
     }
 
     @Override
@@ -82,19 +84,37 @@ final class CsvTabularSource implements TabularSource {
 
     /**
      * {@code record.get(column)} throws on unknown column or field-count
-     * mismatch; {@link BigDecimal} throws on non-numeric — the engine converts
-     * both into {@code RowError}s per the {@code ErrorStrategy}.
+     * mismatch; plain-decimal check throws on non-numeric text — the engine
+     * converts both into {@code RowError}s per the {@code ErrorStrategy}.
      */
-    private record CsvTabularRow(CSVRecord record) implements TabularRow {
+    private record CsvTabularRow(CSVRecord record, int expectedFields) implements TabularRow {
+
+        /**
+         * Plain decimal notation only — no separators, exponents, or signs beyond a leading {@code -}.
+         */
+        private static final Pattern PLAIN_DECIMAL = Pattern.compile("-?(\\d+(\\.\\d+)?|\\.\\d+)");
+
+        private void checkFieldCount() {
+            if (record.size() != expectedFields) {
+                throw new IllegalStateException(
+                        "expected " + expectedFields + " fields but found " + record.size());
+            }
+        }
 
         @Override
         public String text(String column) {
+            checkFieldCount();
             return record.get(column);
         }
 
         @Override
         public BigDecimal number(String column) {
-            return new BigDecimal(record.get(column));
+            checkFieldCount();
+            String raw = record.get(column);
+            if (!PLAIN_DECIMAL.matcher(raw).matches()) {
+                throw new NumberFormatException("not a plain decimal number: '" + raw + "'");
+            }
+            return new BigDecimal(raw);
         }
 
         @Override

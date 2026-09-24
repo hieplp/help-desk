@@ -8,12 +8,13 @@ import dev.hieplp.order.calculator.excel.Excel;
 import dev.hieplp.order.calculator.model.ColumnRole;
 import dev.hieplp.order.calculator.spi.TabularSink;
 import dev.hieplp.order.calculator.spi.TabularSource;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Test application for the order-calculator library. Generates the sample
@@ -27,15 +28,21 @@ public final class Main {
     private static final Path DIR = Path.of("build", "demo");
 
     private static final Object[][] SAMPLE = {
-        {"product_id", "quantity", "price_per_item", "vat"},
-        {"P1", 2, 10.00, 10},
-        {"P2", 1, 5.50, 20},
-        {"P3", 3, 3.33, 8.5},
+            {"product_id", "quantity", "price_per_item", "vat"},
+            {"P1", 2, 10.00, 10},
+            {"P2", 1, 5.50, 20},
+            {"P3", 3, 3.33, 8.5},
     };
 
     private Main() {
     }
 
+    /**
+     * Generates the sample inputs and runs every source→sink format pair.
+     *
+     * @param args ignored
+     * @throws IOException if the demo files cannot be written
+     */
     public static void main(String[] args) throws IOException {
         Files.createDirectories(DIR);
         Path csvIn = DIR.resolve("orders.csv");

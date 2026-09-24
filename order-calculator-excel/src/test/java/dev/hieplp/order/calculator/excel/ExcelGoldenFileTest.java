@@ -7,13 +7,7 @@ import dev.hieplp.order.calculator.csv.Csv;
 import dev.hieplp.order.calculator.model.ColumnRole;
 import dev.hieplp.order.calculator.spi.TabularSink;
 import dev.hieplp.order.calculator.spi.TabularSource;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,6 +66,35 @@ class ExcelGoldenFileTest {
     private OrderMetadata meta;
     private Path csvIn;
     private Path xlsxIn;
+
+    private static void assertResult(OrderResult r) {
+        assertEquals(3, r.lineCount());
+        assertEquals(0, r.skippedCount());
+        assertEquals(new BigDecimal("35.49"), r.orderTotalBeforeTax());
+        assertEquals(new BigDecimal("39.44"), r.orderTotalAfterTax());
+    }
+
+    private static void assertSheet(Path xlsx, String[][] expected) throws Exception {
+        DataFormatter formatter = new DataFormatter();
+        try (Workbook wb = WorkbookFactory.create(xlsx.toFile())) {
+            Sheet sheet = wb.getSheetAt(0);
+            assertEquals(expected.length - 1, sheet.getLastRowNum());
+            for (int r = 0; r < expected.length; r++) {
+                Row row = sheet.getRow(r);
+                for (int c = 0; c < expected[r].length; c++) {
+                    Cell cell = row.getCell(c);
+                    String want = expected[r][c];
+                    if (r > 0 && NUMERIC_COLS.contains(c)) {
+                        assertEquals(CellType.NUMERIC, cell.getCellType(), "cell " + r + "," + c);
+                        assertEquals(0, new BigDecimal(want).compareTo(
+                                BigDecimal.valueOf(cell.getNumericCellValue())), "cell " + r + "," + c);
+                    } else {
+                        assertEquals(want, formatter.formatCellValue(cell), "cell " + r + "," + c);
+                    }
+                }
+            }
+        }
+    }
 
     @BeforeEach
     void setUp() throws Exception {
@@ -136,35 +159,6 @@ class ExcelGoldenFileTest {
     private OrderResult process(TabularSource source, TabularSink sink) throws Exception {
         try (source; sink) {
             return OrderCalculator.process(source, sink, meta);
-        }
-    }
-
-    private static void assertResult(OrderResult r) {
-        assertEquals(3, r.lineCount());
-        assertEquals(0, r.skippedCount());
-        assertEquals(new BigDecimal("35.49"), r.orderTotalBeforeTax());
-        assertEquals(new BigDecimal("39.44"), r.orderTotalAfterTax());
-    }
-
-    private static void assertSheet(Path xlsx, String[][] expected) throws Exception {
-        DataFormatter formatter = new DataFormatter();
-        try (Workbook wb = WorkbookFactory.create(xlsx.toFile())) {
-            Sheet sheet = wb.getSheetAt(0);
-            assertEquals(expected.length - 1, sheet.getLastRowNum());
-            for (int r = 0; r < expected.length; r++) {
-                Row row = sheet.getRow(r);
-                for (int c = 0; c < expected[r].length; c++) {
-                    Cell cell = row.getCell(c);
-                    String want = expected[r][c];
-                    if (r > 0 && NUMERIC_COLS.contains(c)) {
-                        assertEquals(CellType.NUMERIC, cell.getCellType(), "cell " + r + "," + c);
-                        assertEquals(0, new BigDecimal(want).compareTo(
-                                BigDecimal.valueOf(cell.getNumericCellValue())), "cell " + r + "," + c);
-                    } else {
-                        assertEquals(want, formatter.formatCellValue(cell), "cell " + r + "," + c);
-                    }
-                }
-            }
         }
     }
 }
