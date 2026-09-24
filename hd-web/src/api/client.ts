@@ -1,4 +1,4 @@
-import { getSession } from '#/features/auth/session'
+import { getSession, setSession } from '#/features/auth/session'
 
 async function request(method: string, path: string, body?: unknown) {
   const session = getSession()
@@ -12,6 +12,10 @@ async function request(method: string, path: string, body?: unknown) {
   })
   if (!res.ok) {
     const data = await res.json().catch(() => null)
+    if (res.status === 401 && session) {
+      setSession(null)
+      window.location.href = '/login'
+    }
     throw new Error(data?.message ?? `Request failed (${res.status})`)
   }
   return res.status === 204 ? null : res.json()
