@@ -1,0 +1,4 @@
+product_id,quantity,price_per_item,vat
+P1,2,10.00,10
+P2,1,5.50,20
+P3,3,3.33,8.5

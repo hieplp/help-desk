@@ -1,0 +1,5 @@
+product_id,quantity,price_per_item,vat,total_price_before_tax,total_price_after_tax
+P1,2,10.00,10,20.00,22.00
+P2,1,5.50,20,5.50,6.60
+P3,3,3.33,8.5,9.99,10.84
+TOTAL,,,,35.49,39.44
