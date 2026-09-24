@@ -34,7 +34,7 @@ export function TicketsPage() {
             <p className="island-kicker mb-2">Help Desk</p>
             <h1 className="demo-title">Tickets</h1>
           </div>
-          <label className="demo-muted flex items-center gap-2 text-sm">
+          <label className="demo-muted flex items-center gap-2 whitespace-nowrap text-sm">
             Status
             <select
               className="demo-input w-auto"
