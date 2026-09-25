@@ -43,3 +43,4 @@ boundary; `config` holds security/JWT; `exception` holds the error handler. Full
 - `static/` and `templates/` stay empty.
 - Branches and commits follow `../docs/rules/git-commit-rules.md` — work on a `<type>/<slug>` branch, never commit
   directly to `main`.
+- Issues/PRs follow `../.github/ISSUE_TEMPLATE/` and `../.github/pull_request_template.md`.

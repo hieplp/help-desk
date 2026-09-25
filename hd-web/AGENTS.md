@@ -44,3 +44,4 @@ bun run generate-routes  # rebuild routeTree.gen.ts after adding a route file
 - No state library beyond zustand (session only); no CSS modules; no test setup.
 - Branches and commits follow `../docs/rules/git-commit-rules.md` — work on a `<type>/<slug>` branch, never commit
   directly to `main`.
+- Issues/PRs follow `../.github/ISSUE_TEMPLATE/` and `../.github/pull_request_template.md`.
