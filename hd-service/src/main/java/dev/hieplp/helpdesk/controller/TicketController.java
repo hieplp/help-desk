@@ -5,6 +5,7 @@ import dev.hieplp.helpdesk.model.dto.ticket.CreateCommentRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.CreateTicketRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketDetail;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketListItem;
+import dev.hieplp.helpdesk.model.dto.ticket.PatchTicketRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketResponse;
 import dev.hieplp.helpdesk.security.principal.Caller;
 import dev.hieplp.helpdesk.security.principal.CurrentCaller;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Ticket endpoints under {@code /tickets}. Role and ownership rules live in {@link TicketService};
@@ -93,8 +93,7 @@ public class TicketController {
   public TicketResponse update(
       @CurrentCaller Caller caller,
       @PathVariable Long id,
-      @RequestBody ObjectNode patch
-  ) {
+      @RequestBody PatchTicketRequest patch) {
     return ticketService.update(caller, id, patch);
   }
 

@@ -2,12 +2,12 @@ package dev.hieplp.helpdesk.service;
 import dev.hieplp.helpdesk.model.dto.ticket.CommentResponse;
 import dev.hieplp.helpdesk.model.dto.ticket.CreateCommentRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.CreateTicketRequest;
+import dev.hieplp.helpdesk.model.dto.ticket.PatchTicketRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketDetail;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketListItem;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketResponse;
 import dev.hieplp.helpdesk.security.principal.Caller;
 import java.util.List;
-import tools.jackson.databind.node.ObjectNode;
 
 /** Ticket use cases. Role and ownership rules are enforced here, not in the controller. */
 public interface TicketService {
@@ -48,13 +48,13 @@ public interface TicketService {
    *
    * @param caller authenticated user
    * @param ticketId ticket id
-   * @param patch raw JSON body; must contain at least one allowed key
+   * @param patch parsed patch body; must contain at least one patchable key
    * @return the updated ticket, without comments
    * @throws dev.hieplp.helpdesk.exception.ApiException 400 on bad id, empty body, unknown field,
    *     bad enum, or non-agent assignee; 404 when missing or owned by another requester; 403 when
    *     the caller's role cannot make the change or the ticket is closed
    */
-  TicketResponse update(Caller caller, Long ticketId, ObjectNode patch);
+  TicketResponse update(Caller caller, Long ticketId, PatchTicketRequest patch);
 
   /**
    * Appends a comment to a ticket. Closed tickets still accept comments.

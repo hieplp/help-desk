@@ -4,6 +4,7 @@ import dev.hieplp.helpdesk.exception.ApiException;
 import dev.hieplp.helpdesk.model.dto.ticket.CommentResponse;
 import dev.hieplp.helpdesk.model.dto.ticket.CreateCommentRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.CreateTicketRequest;
+import dev.hieplp.helpdesk.model.dto.ticket.PatchTicketRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketDetail;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketListItem;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketResponse;
@@ -27,7 +28,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Ticket business rules: requesters see and touch only their own tickets, agents see all. {@code
@@ -124,23 +124,19 @@ public class TicketServiceImpl implements TicketService {
   /** {@inheritDoc} */
   @Override
   @Transactional
-  public TicketResponse update(Caller caller, Long ticketId, ObjectNode patch) {
+  public TicketResponse update(Caller caller, Long ticketId, PatchTicketRequest patch) {
     log.info("Patching ticket id={} for callerId={} role={}", ticketId, caller.id(), caller.role());
 
     var ticket = loadVisible(caller, ticketId);
 
-    // Field-level 400s before role-level 403s (docs/rules/validation-rules.md).
+    // Field-level 400s before role-level 403s (docs/rules/validation-rules.md). The DTO already
+    // rejects unknown fields at bind time.
     if (patch == null || patch.isEmpty()) {
       throw new ApiException(HttpStatus.BAD_REQUEST, "Patch body must not be empty");
     }
-    for (String key : patch.propertyNames()) {
-      if (!key.equals("status") && !key.equals("assigneeId")) {
-        throw new ApiException(HttpStatus.BAD_REQUEST, "Unknown field: " + key);
-      }
-    }
 
     TicketStatus status = null;
-    JsonNode statusNode = patch.get("status");
+    JsonNode statusNode = patch.getStatus();
     if (statusNode != null) {
       if (!statusNode.isString()) {
         throw new ApiException(HttpStatus.BAD_REQUEST, "status must be a string");
@@ -152,9 +148,9 @@ public class TicketServiceImpl implements TicketService {
               .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Unknown status"));
     }
 
-    boolean assigneePresent = patch.has("assigneeId");
+    boolean assigneePresent = patch.getAssigneeId() != null;
     Long assigneeId = null;
-    JsonNode assigneeNode = patch.get("assigneeId");
+    JsonNode assigneeNode = patch.getAssigneeId();
     if (assigneePresent && !assigneeNode.isNull()) {
       if (!assigneeNode.isIntegralNumber()) {
         throw new ApiException(HttpStatus.BAD_REQUEST, "assigneeId must be an integer or null");
