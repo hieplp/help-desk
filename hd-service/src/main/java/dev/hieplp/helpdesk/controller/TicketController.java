@@ -41,7 +41,8 @@ public class TicketController {
    */
   @PostMapping
   public ResponseEntity<TicketResponse> create(
-      @CurrentCaller Caller caller, @Valid @RequestBody CreateTicketRequest request) {
+      @CurrentCaller Caller caller, @Valid @RequestBody CreateTicketRequest request
+  ) {
     return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.create(caller, request));
   }
 
@@ -54,7 +55,8 @@ public class TicketController {
    */
   @GetMapping
   public List<TicketListItem> list(
-      @CurrentCaller Caller caller, @RequestParam(required = false) String status) {
+      @CurrentCaller Caller caller, @RequestParam(required = false) String status
+  ) {
     return ticketService.list(caller, status);
   }
 
@@ -65,7 +67,7 @@ public class TicketController {
    * @param id ticket id
    * @return 200 ticket detail
    * @throws dev.hieplp.helpdesk.exception.ApiException 404 when the ticket is missing or belongs to
-   *     another requester (existence is not confirmed)
+   *         another requester (existence is not confirmed)
    */
   @GetMapping("/{id}")
   public TicketDetail get(@CurrentCaller Caller caller, @PathVariable Long id) {

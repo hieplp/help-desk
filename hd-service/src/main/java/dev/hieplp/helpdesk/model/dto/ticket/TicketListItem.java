@@ -30,7 +30,8 @@ public record TicketListItem(
     String requesterName,
     Long assigneeId,
     Instant createdAt,
-    Instant updatedAt) {
+    Instant updatedAt
+) {
 
   /**
    * Maps a {@link Ticket} entity to the list shape.

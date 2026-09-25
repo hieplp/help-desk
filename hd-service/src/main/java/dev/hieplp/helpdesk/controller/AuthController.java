@@ -27,7 +27,7 @@ public class AuthController {
    * @param request email + password
    * @return 200 signed token + user profile
    * @throws dev.hieplp.helpdesk.exception.ApiException 401 on unknown email or wrong password —
-   *     same message either way
+   *         same message either way
    */
   @PostMapping("/login")
   public LoginResponse login(@Valid @RequestBody LoginRequest request) {

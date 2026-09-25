@@ -13,7 +13,8 @@ import java.time.Instant;
  * @param createdAt when it was written
  */
 public record CommentResponse(
-    Long id, Long ticketId, Long authorId, String body, Instant createdAt) {
+    Long id, Long ticketId, Long authorId, String body, Instant createdAt
+) {
 
   /**
    * Maps a {@link Comment} entity to its API shape.

@@ -43,7 +43,8 @@ public class WebConfig implements WebMvcConfigurer {
         @NonNull MethodParameter parameter,
         @Nullable ModelAndViewContainer mavContainer,
         @NonNull NativeWebRequest webRequest,
-        @Nullable WebDataBinderFactory binderFactory) {
+        @Nullable WebDataBinderFactory binderFactory
+    ) {
       return Caller.from(SecurityContextHolder.getContext().getAuthentication());
     }
   }

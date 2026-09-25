@@ -12,7 +12,7 @@ public interface AuthService {
    * @param request email + password
    * @return signed token + user profile
    * @throws dev.hieplp.helpdesk.exception.ApiException 401 with a generic message on any credential
-   *     failure — never reveals which part failed
+   *         failure — never reveals which part failed
    */
   LoginResponse login(LoginRequest request);
 }

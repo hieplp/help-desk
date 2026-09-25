@@ -30,7 +30,8 @@ public record TicketResponse(
     Long requesterId,
     Long assigneeId,
     Instant createdAt,
-    Instant updatedAt) {
+    Instant updatedAt
+) {
 
   /**
    * Maps a {@link Ticket} entity to the response shape.
