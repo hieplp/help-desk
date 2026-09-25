@@ -102,10 +102,19 @@ class PatchTicketTests {
     foreignId = createTicket(login("requester2@b.co"), "Foreign");
   }
 
-  private org.springframework.test.web.servlet.ResultActions doPatch(
+  private org.springframework.test.web.servlet.ResultActions patchTicket(
       long id, String token, String body) throws Exception {
     return mvc.perform(
         patch("/tickets/" + id)
+            .header("Authorization", "Bearer " + token)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body));
+  }
+
+  private org.springframework.test.web.servlet.ResultActions patchAssignee(
+      long id, String token, String body) throws Exception {
+    return mvc.perform(
+        patch("/tickets/" + id + "/assignee")
             .header("Authorization", "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body));
@@ -115,20 +124,20 @@ class PatchTicketTests {
   void agentMovesThroughLifecycle() throws Exception {
     var token = login("agent@b.co");
 
-    doPatch(ownId, token, "{\"status\":\"in_progress\"}")
+    patchTicket(ownId, token, "{\"status\":\"in_progress\"}")
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.status").value("in_progress"));
-    doPatch(ownId, token, "{\"status\":\"resolved\"}")
+    patchTicket(ownId, token, "{\"status\":\"resolved\"}")
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.status").value("resolved"));
-    doPatch(ownId, token, "{\"status\":\"closed\"}")
+    patchTicket(ownId, token, "{\"status\":\"closed\"}")
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.status").value("closed"));
   }
 
   @Test
   void agentCannotSetOpen() throws Exception {
-    doPatch(ownId, login("agent@b.co"), "{\"status\":\"open\"}")
+    patchTicket(ownId, login("agent@b.co"), "{\"status\":\"open\"}")
         .andExpect(status().isForbidden());
   }
 
@@ -136,19 +145,20 @@ class PatchTicketTests {
   void requesterClosesOwnTicketOnly() throws Exception {
     var token = login("requester@b.co");
 
-    doPatch(ownId, token, "{\"status\":\"closed\"}")
+    patchTicket(ownId, token, "{\"status\":\"closed\"}")
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.status").value("closed"));
 
     var other = createTicket(token, "Other");
-    doPatch(other, token, "{\"status\":\"in_progress\"}").andExpect(status().isForbidden());
-    doPatch(other, token, "{\"status\":\"resolved\"}").andExpect(status().isForbidden());
-    doPatch(other, token, "{\"status\":\"open\"}").andExpect(status().isForbidden());
+    patchTicket(other, token, "{\"status\":\"in_progress\"}")
+        .andExpect(status().isForbidden());
+    patchTicket(other, token, "{\"status\":\"resolved\"}").andExpect(status().isForbidden());
+    patchTicket(other, token, "{\"status\":\"open\"}").andExpect(status().isForbidden());
   }
 
   @Test
   void requesterForeignTicketIs404() throws Exception {
-    doPatch(foreignId, login("requester@b.co"), "{\"status\":\"closed\"}")
+    patchTicket(foreignId, login("requester@b.co"), "{\"status\":\"closed\"}")
         .andExpect(status().isNotFound());
   }
 
@@ -158,53 +168,56 @@ class PatchTicketTests {
     var agent = login("agent@b.co");
     var requester = login("requester@b.co");
 
-    doPatch(ownId, agent, "{\"status\":\"resolved\"}").andExpect(status().isForbidden());
-    doPatch(ownId, agent, "{\"assigneeId\":" + agentId + "}").andExpect(status().isForbidden());
-    doPatch(ownId, requester, "{\"status\":\"closed\"}").andExpect(status().isForbidden());
+    patchTicket(ownId, agent, "{\"status\":\"resolved\"}").andExpect(status().isForbidden());
+    patchAssignee(ownId, agent, "{\"assigneeId\":" + agentId + "}")
+        .andExpect(status().isForbidden());
+    patchTicket(ownId, requester, "{\"status\":\"closed\"}").andExpect(status().isForbidden());
   }
 
   @Test
   void assigneeRules() throws Exception {
     var token = login("agent@b.co");
 
-    doPatch(ownId, token, "{\"assigneeId\":" + agentId + "}")
+    patchAssignee(ownId, token, "{\"assigneeId\":" + agentId + "}")
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.assigneeId").value(agentId));
+        .andExpect(jsonPath("$.assigneeId").value(agentId))
+        .andExpect(jsonPath("$.assigneeName").value("Agent"));
 
-    doPatch(ownId, token, "{\"assigneeId\":null}")
+    patchAssignee(ownId, token, "{\"assigneeId\":null}")
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.assigneeId").doesNotExist());
 
-    doPatch(ownId, token, "{\"assigneeId\":" + requesterId + "}")
+    patchAssignee(ownId, token, "{\"assigneeId\":" + requesterId + "}")
         .andExpect(status().isBadRequest());
-    doPatch(ownId, token, "{\"assigneeId\":999999}").andExpect(status().isBadRequest());
-    doPatch(ownId, token, "{\"assigneeId\":\"x\"}").andExpect(status().isBadRequest());
+    patchAssignee(ownId, token, "{\"assigneeId\":999999}").andExpect(status().isBadRequest());
+    patchAssignee(ownId, token, "{\"assigneeId\":\"x\"}").andExpect(status().isBadRequest());
+    patchAssignee(ownId, token, "{}").andExpect(status().isBadRequest());
   }
 
   @Test
-  void requesterSendingAssigneeGets403() throws Exception {
-    doPatch(ownId, login("requester@b.co"), "{\"assigneeId\":" + agentId + "}")
+  void requesterCannotAssign() throws Exception {
+    patchAssignee(ownId, login("requester@b.co"), "{\"assigneeId\":" + agentId + "}")
         .andExpect(status().isForbidden());
+    // status endpoint does not carry assigneeId — unknown field → 400
+    patchTicket(ownId, login("requester@b.co"), "{\"assigneeId\":" + agentId + "}")
+        .andExpect(status().isBadRequest());
   }
 
   @Test
   void fieldErrorsBeatRoleErrors() throws Exception {
     var token = login("requester@b.co");
 
-    doPatch(ownId, token, "{}").andExpect(status().isBadRequest());
-    doPatch(ownId, token, "{\"title\":\"x\"}").andExpect(status().isBadRequest());
-    doPatch(ownId, token, "{\"status\":\"bogus\"}").andExpect(status().isBadRequest());
-    doPatch(ownId, token, "{\"status\":\"OPEN\"}").andExpect(status().isBadRequest());
-    doPatch(ownId, token, "{\"status\":null}").andExpect(status().isBadRequest());
-    // bad enum + forbidden transition in one body → 400 wins
-    doPatch(ownId, token, "{\"status\":\"bogus\",\"assigneeId\":" + agentId + "}")
-        .andExpect(status().isBadRequest());
+    patchTicket(ownId, token, "{}").andExpect(status().isBadRequest());
+    patchTicket(ownId, token, "{\"title\":\"x\"}").andExpect(status().isBadRequest());
+    patchTicket(ownId, token, "{\"status\":\"bogus\"}").andExpect(status().isBadRequest());
+    patchTicket(ownId, token, "{\"status\":\"OPEN\"}").andExpect(status().isBadRequest());
+    patchTicket(ownId, token, "{\"status\":null}").andExpect(status().isBadRequest());
   }
 
   @Test
   void patchResponseHasNoComments() throws Exception {
     var result =
-        doPatch(ownId, login("agent@b.co"), "{\"status\":\"in_progress\"}")
+        patchTicket(ownId, login("agent@b.co"), "{\"status\":\"in_progress\"}")
             .andExpect(status().isOk())
             .andReturn();
     var node = objectMapper.readTree(result.getResponse().getContentAsString());
@@ -221,6 +234,6 @@ class PatchTicketTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"status\":\"closed\"}"))
         .andExpect(status().isBadRequest());
-    doPatch(999999, token, "{\"status\":\"closed\"}").andExpect(status().isNotFound());
+    patchTicket(999999, token, "{\"status\":\"closed\"}").andExpect(status().isNotFound());
   }
 }

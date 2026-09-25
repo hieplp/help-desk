@@ -19,22 +19,30 @@ export function TicketControls({
   user: Session['user']
   onUpdated: (updated: TicketResponse) => void
 }) {
-  const { patch, error, pending } = usePatchTicket(ticket.id)
+  const { updateStatus, updateAssignee, error, pending } = usePatchTicket(ticket.id)
   const isAgent = user.role === 'agent'
   // Requesters never call GET /users — it 403s for them.
   const { users } = useUsers(isAgent && ticket.status !== 'closed')
 
   if (ticket.status === 'closed') return null
 
-  const apply = async (body: { status?: string; assigneeId?: number | null }) => {
-    const label =
-      body.status !== undefined
-        ? `Set status to ${body.status.replace('_', ' ')}?`
-        : body.assigneeId === null
-          ? 'Unassign this ticket?'
-          : 'Change assignee?'
-    if (!window.confirm(label)) return
-    const updated = await patch(body)
+  const setStatus = async (status: string) => {
+    if (!window.confirm(`Set status to ${status.replace('_', ' ')}?`)) return
+    const updated = await updateStatus(status)
+    if (updated) {
+      toast('Ticket updated')
+      onUpdated(updated)
+    }
+  }
+
+  const setAssignee = async (assigneeId: number | null) => {
+    if (
+      !window.confirm(
+        assigneeId === null ? 'Unassign this ticket?' : 'Change assignee?',
+      )
+    )
+      return
+    const updated = await updateAssignee(assigneeId)
     if (updated) {
       toast('Ticket updated')
       onUpdated(updated)
@@ -59,7 +67,7 @@ export function TicketControls({
                     : 'demo-button'
                 }
                 disabled={pending || ticket.status === s.value}
-                onClick={() => apply({ status: s.value })}
+                onClick={() => setStatus(s.value)}
               >
                 {s.label}
               </button>
@@ -72,9 +80,9 @@ export function TicketControls({
               disabled={pending || users === null}
               value={ticket.assigneeId ?? ''}
               onChange={(e) =>
-                apply({
-                  assigneeId: e.target.value === '' ? null : Number(e.target.value),
-                })
+                setAssignee(
+                  e.target.value === '' ? null : Number(e.target.value),
+                )
               }
             >
               <option value="">Unassigned</option>
@@ -95,7 +103,7 @@ export function TicketControls({
             type="button"
             className="demo-button demo-button-danger"
             disabled={pending}
-            onClick={() => apply({ status: 'closed' })}
+            onClick={() => setStatus('closed')}
           >
             Close ticket
           </button>

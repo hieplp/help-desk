@@ -2,10 +2,11 @@ package dev.hieplp.helpdesk.service;
 import dev.hieplp.helpdesk.model.dto.ticket.CommentResponse;
 import dev.hieplp.helpdesk.model.dto.ticket.CreateCommentRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.CreateTicketRequest;
-import dev.hieplp.helpdesk.model.dto.ticket.PatchTicketRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketDetail;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketListItem;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketResponse;
+import dev.hieplp.helpdesk.model.dto.ticket.UpdateAssigneeRequest;
+import dev.hieplp.helpdesk.model.dto.ticket.UpdateStatusRequest;
 import dev.hieplp.helpdesk.security.principal.Caller;
 import java.util.List;
 
@@ -43,18 +44,32 @@ public interface TicketService {
   TicketDetail get(Caller caller, Long ticketId);
 
   /**
-   * Partially updates a ticket — only {@code status} and {@code assigneeId} are patchable, and
-   * {@code assigneeId: null} unassigns while an absent key leaves it untouched.
+   * Changes a ticket's status. Agents may set {@code in_progress}, {@code resolved}, or {@code
+   * closed} from any non-closed status; requesters may only set {@code closed} on their own
+   * ticket. {@code closed} is terminal.
    *
    * @param caller authenticated user
    * @param ticketId ticket id
-   * @param patch parsed patch body; must contain at least one patchable key
+   * @param request target status
    * @return the updated ticket, without comments
-   * @throws dev.hieplp.helpdesk.exception.ApiException 400 on bad id, empty body, unknown field,
-   *     bad enum, or non-agent assignee; 404 when missing or owned by another requester; 403 when
-   *     the caller's role cannot make the change or the ticket is closed
+   * @throws dev.hieplp.helpdesk.exception.ApiException 400 on bad id; 404 when missing or owned
+   *     by another requester; 403 when the caller's role cannot make the transition or the ticket
+   *     is closed
    */
-  TicketResponse update(Caller caller, Long ticketId, PatchTicketRequest patch);
+  TicketResponse updateStatus(Caller caller, Long ticketId, UpdateStatusRequest request);
+
+  /**
+   * Assigns a ticket to an agent, or unassigns when {@code assigneeId} is null. Agent-only.
+   *
+   * @param caller authenticated user
+   * @param ticketId ticket id
+   * @param request assignee id or null
+   * @return the updated ticket, without comments
+   * @throws dev.hieplp.helpdesk.exception.ApiException 400 on bad id, missing key, or non-agent
+   *     assignee; 404 when missing or owned by another requester; 403 for requesters or a closed
+   *     ticket
+   */
+  TicketResponse updateAssignee(Caller caller, Long ticketId, UpdateAssigneeRequest request);
 
   /**
    * Appends a comment to a ticket. Closed tickets still accept comments.

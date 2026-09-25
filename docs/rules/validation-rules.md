@@ -28,7 +28,8 @@ Server-side input validation. Matches `docs/api-rules.md`. Client validation is 
 
 - `POST /auth/login`: `email` + `password` required. Failure → `401`, never `400`, same message either way.
 - `POST /tickets`: caller cannot send `status`, `requesterId`, or `assigneeId` → `400` if present.
-- `PATCH /tickets/:id`: only `status` and `assigneeId` allowed. Empty body → `400`. Field-level `400` before role-level `403`.
+- `PATCH /tickets/:id`: `status` required, known enum value only; other fields rejected. Field-level `400` before role-level `403`.
+- `PATCH /tickets/:id/assignee`: `assigneeId` required key, integer or `null`, must reference an agent. Field-level `400` before role-level `403`.
 - `GET /tickets?status=`: unknown status → `400`.
 - `POST /tickets/:id/comments`: `body` required. Closed ticket still accepts comments.
 

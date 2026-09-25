@@ -5,8 +5,9 @@ import dev.hieplp.helpdesk.model.dto.ticket.CreateCommentRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.CreateTicketRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketDetail;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketListItem;
-import dev.hieplp.helpdesk.model.dto.ticket.PatchTicketRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketResponse;
+import dev.hieplp.helpdesk.model.dto.ticket.UpdateAssigneeRequest;
+import dev.hieplp.helpdesk.model.dto.ticket.UpdateStatusRequest;
 import dev.hieplp.helpdesk.security.principal.Caller;
 import dev.hieplp.helpdesk.security.principal.CurrentCaller;
 import dev.hieplp.helpdesk.service.TicketService;
@@ -79,22 +80,43 @@ public class TicketController {
   }
 
   /**
-   * Partially updates a ticket — only {@code status} and {@code assigneeId} are accepted; the raw
-   * JSON body is used so {@code assigneeId: null} (unassign) stays distinct from an absent key.
+   * Changes a ticket's status — the only patchable field. Agents may set {@code in_progress},
+   * {@code resolved}, or {@code closed} from any non-closed status; requesters may only set
+   * {@code closed} on their own ticket.
    *
    * @param caller authenticated user
    * @param id ticket id
-   * @param patch JSON object with at least one allowed key
+   * @param request target status
    * @return 200 updated ticket, no comments
    * @throws dev.hieplp.helpdesk.exception.ApiException 400 on bad input, 403 on a transition the
    *     role cannot make or a closed ticket, 404 when missing or another requester's
    */
   @PatchMapping("/{id}")
-  public TicketResponse update(
+  public TicketResponse updateStatus(
       @CurrentCaller Caller caller,
       @PathVariable Long id,
-      @RequestBody PatchTicketRequest patch) {
-    return ticketService.update(caller, id, patch);
+      @Valid @RequestBody UpdateStatusRequest request
+  ) {
+    return ticketService.updateStatus(caller, id, request);
+  }
+
+  /**
+   * Assigns a ticket to an agent; {@code assigneeId: null} unassigns. Agent-only.
+   *
+   * @param caller authenticated user
+   * @param id ticket id
+   * @param request assignee id or null
+   * @return 200 updated ticket, no comments
+   * @throws dev.hieplp.helpdesk.exception.ApiException 400 on bad input, 403 for requesters or a
+   *     closed ticket, 404 when missing or another requester's
+   */
+  @PatchMapping("/{id}/assignee")
+  public TicketResponse updateAssignee(
+      @CurrentCaller Caller caller,
+      @PathVariable Long id,
+      @RequestBody UpdateAssigneeRequest request
+  ) {
+    return ticketService.updateAssignee(caller, id, request);
   }
 
   /**

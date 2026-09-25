@@ -4,10 +4,11 @@ import dev.hieplp.helpdesk.exception.ApiException;
 import dev.hieplp.helpdesk.model.dto.ticket.CommentResponse;
 import dev.hieplp.helpdesk.model.dto.ticket.CreateCommentRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.CreateTicketRequest;
-import dev.hieplp.helpdesk.model.dto.ticket.PatchTicketRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketDetail;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketListItem;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketResponse;
+import dev.hieplp.helpdesk.model.dto.ticket.UpdateAssigneeRequest;
+import dev.hieplp.helpdesk.model.dto.ticket.UpdateStatusRequest;
 import dev.hieplp.helpdesk.model.entity.Comment;
 import dev.hieplp.helpdesk.model.entity.Ticket;
 import dev.hieplp.helpdesk.model.enums.Role;
@@ -27,7 +28,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tools.jackson.databind.JsonNode;
 
 /**
  * Ticket business rules: requesters see and touch only their own tickets, agents see all. {@code
@@ -124,38 +124,44 @@ public class TicketServiceImpl implements TicketService {
   /** {@inheritDoc} */
   @Override
   @Transactional
-  public TicketResponse update(Caller caller, Long ticketId, PatchTicketRequest patch) {
-    log.info("Patching ticket id={} for callerId={} role={}", ticketId, caller.id(), caller.role());
+  public TicketResponse updateStatus(Caller caller, Long ticketId, UpdateStatusRequest request) {
+    log.info("Updating status of ticket id={} for callerId={} role={}", ticketId, caller.id(), caller.role());
+
+    var ticket = loadVisible(caller, ticketId);
+    var status = request.status();
+
+    // Role-level 403s — field errors already failed binding before this method ran.
+    if (ticket.getStatus() == TicketStatus.CLOSED) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "Ticket is closed");
+    }
+    if (caller.role() == Role.REQUESTER) {
+      if (status != TicketStatus.CLOSED) {
+        throw new ApiException(HttpStatus.FORBIDDEN, "Requesters may only close their own ticket");
+      }
+    } else if (status == TicketStatus.OPEN) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "Agents cannot reopen a ticket to open");
+    }
+
+    ticket.setStatus(status);
+    var saved = ticketRepository.save(ticket);
+    log.info("Updated ticket id={} to status={}", saved.getId(), saved.getStatus());
+    return TicketResponse.from(saved);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  @Transactional
+  public TicketResponse updateAssignee(
+      Caller caller, Long ticketId, UpdateAssigneeRequest request) {
+    log.info("Updating assignee of ticket id={} for callerId={}", ticketId, caller.id());
 
     var ticket = loadVisible(caller, ticketId);
 
-    // Field-level 400s before role-level 403s (docs/rules/validation-rules.md). The DTO already
-    // rejects unknown fields at bind time.
-    if (patch == null || patch.isEmpty()) {
-      throw new ApiException(HttpStatus.BAD_REQUEST, "Patch body must not be empty");
+    if (!request.isProvided()) {
+      throw new ApiException(HttpStatus.BAD_REQUEST, "assigneeId is required");
     }
-
-    TicketStatus status = null;
-    JsonNode statusNode = patch.getStatus();
-    if (statusNode != null) {
-      if (!statusNode.isString()) {
-        throw new ApiException(HttpStatus.BAD_REQUEST, "status must be a string");
-      }
-      var raw = statusNode.asString();
-      status =
-          TicketStatus.fromJson(raw)
-              .filter(s -> s.toJson().equals(raw))
-              .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Unknown status"));
-    }
-
-    boolean assigneePresent = patch.getAssigneeId() != null;
-    Long assigneeId = null;
-    JsonNode assigneeNode = patch.getAssigneeId();
-    if (assigneePresent && !assigneeNode.isNull()) {
-      if (!assigneeNode.isIntegralNumber()) {
-        throw new ApiException(HttpStatus.BAD_REQUEST, "assigneeId must be an integer or null");
-      }
-      assigneeId = assigneeNode.asLong();
+    Long assigneeId = request.getAssigneeId();
+    if (assigneeId != null) {
       var assignee =
           userRepository
               .findById(assigneeId)
@@ -165,27 +171,17 @@ public class TicketServiceImpl implements TicketService {
       }
     }
 
-    // Role-level 403s after all field validation passed.
     if (ticket.getStatus() == TicketStatus.CLOSED) {
       throw new ApiException(HttpStatus.FORBIDDEN, "Ticket is closed");
     }
     if (caller.role() == Role.REQUESTER) {
-      if (assigneePresent || status != TicketStatus.CLOSED) {
-        throw new ApiException(HttpStatus.FORBIDDEN, "Requesters may only close their own ticket");
-      }
-    } else if (status != null && status == TicketStatus.OPEN) {
-      throw new ApiException(HttpStatus.FORBIDDEN, "Agents cannot reopen a ticket to open");
+      throw new ApiException(HttpStatus.FORBIDDEN, "Only agents can assign tickets");
     }
 
-    if (status != null) {
-      ticket.setStatus(status);
-    }
-    if (assigneePresent) {
-      ticket.setAssignee(assigneeId == null ? null : userRepository.getReferenceById(assigneeId));
-    }
+    ticket.setAssignee(assigneeId == null ? null : userRepository.getReferenceById(assigneeId));
     var saved = ticketRepository.save(ticket);
-    log.info("Patched ticket id={} status={} assigneeId={}", saved.getId(),
-        saved.getStatus(), saved.getAssignee() == null ? null : saved.getAssignee().getId());
+    log.info("Updated ticket id={} assigneeId={}", saved.getId(),
+        saved.getAssignee() == null ? null : saved.getAssignee().getId());
     return TicketResponse.from(saved);
   }
 
