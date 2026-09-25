@@ -4,12 +4,10 @@ import dev.hieplp.helpdesk.model.entity.Ticket;
 import dev.hieplp.helpdesk.model.enums.TicketCategory;
 import dev.hieplp.helpdesk.model.enums.TicketPriority;
 import dev.hieplp.helpdesk.model.enums.TicketStatus;
-
 import java.time.Instant;
 
 /**
- * {@code GET /tickets} list item — same fields as the ticket minus description
- * and comments.
+ * {@code GET /tickets} list item — same fields as the ticket minus description and comments.
  *
  * @param id ticket id
  * @param title short summary
@@ -23,36 +21,34 @@ import java.time.Instant;
  * @param updatedAt last change
  */
 public record TicketListItem(
-        Long id,
-        String title,
-        TicketCategory category,
-        TicketPriority priority,
-        TicketStatus status,
-        Long requesterId,
-        String requesterName,
-        Long assigneeId,
-        Instant createdAt,
-        Instant updatedAt
-) {
+    Long id,
+    String title,
+    TicketCategory category,
+    TicketPriority priority,
+    TicketStatus status,
+    Long requesterId,
+    String requesterName,
+    Long assigneeId,
+    Instant createdAt,
+    Instant updatedAt) {
 
-    /**
-     * Maps a {@link Ticket} entity to the list shape.
-     *
-     * @param ticket entity
-     * @return list item; {@code assigneeId} is null when unassigned
-     */
-    public static TicketListItem from(Ticket ticket) {
-        return new TicketListItem(
-                ticket.getId(),
-                ticket.getTitle(),
-                ticket.getCategory(),
-                ticket.getPriority(),
-                ticket.getStatus(),
-                ticket.getRequester().getId(),
-                ticket.getRequester().getName(),
-                ticket.getAssignee() == null ? null : ticket.getAssignee().getId(),
-                ticket.getCreatedAt(),
-                ticket.getUpdatedAt()
-        );
-    }
+  /**
+   * Maps a {@link Ticket} entity to the list shape.
+   *
+   * @param ticket entity
+   * @return list item; {@code assigneeId} is null when unassigned
+   */
+  public static TicketListItem from(Ticket ticket) {
+    return new TicketListItem(
+        ticket.getId(),
+        ticket.getTitle(),
+        ticket.getCategory(),
+        ticket.getPriority(),
+        ticket.getStatus(),
+        ticket.getRequester().getId(),
+        ticket.getRequester().getName(),
+        ticket.getAssignee() == null ? null : ticket.getAssignee().getId(),
+        ticket.getCreatedAt(),
+        ticket.getUpdatedAt());
+  }
 }

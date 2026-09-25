@@ -8,8 +8,4 @@ import dev.hieplp.helpdesk.model.dto.user.UserResponse;
  * @param token signed JWT + expiry
  * @param user the authenticated user's profile
  */
-public record LoginResponse(
-        TokenResponse token,
-        UserResponse user
-) {
-}
+public record LoginResponse(TokenResponse token, UserResponse user) {}

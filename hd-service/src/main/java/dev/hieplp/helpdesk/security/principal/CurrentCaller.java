@@ -7,11 +7,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Injects the authenticated {@link Caller} (user id + role) into a controller parameter.
- * Usage: {@code @GetMapping ... list(@CurrentCaller Caller caller)}.
+ * Injects the authenticated {@link Caller} (user id + role) into a controller parameter. Usage:
+ * {@code @GetMapping ... list(@CurrentCaller Caller caller)}.
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface CurrentCaller {
-}
+public @interface CurrentCaller {}

@@ -1,0 +1,22 @@
+name: hd-service test
+
+on:
+  push:
+    branches: [main]
+    paths: ['hd-service/**', '.github/workflows/hd-service-test.yml']
+  pull_request:
+    branches: [main]
+    paths: ['hd-service/**', '.github/workflows/hd-service-test.yml']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - name: Run unit tests
+        working-directory: hd-service
+        run: ./gradlew test

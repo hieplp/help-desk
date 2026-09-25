@@ -1,0 +1,22 @@
+name: hd-service codestyle
+
+on:
+  push:
+    branches: [main]
+    paths: ['hd-service/**', '.github/workflows/hd-service-codestyle.yml']
+  pull_request:
+    branches: [main]
+    paths: ['hd-service/**', '.github/workflows/hd-service-codestyle.yml']
+
+jobs:
+  spotless:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - name: Check code style
+        working-directory: hd-service
+        run: ./gradlew spotlessCheck
