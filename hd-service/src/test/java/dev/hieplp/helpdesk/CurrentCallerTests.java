@@ -1,6 +1,7 @@
 package dev.hieplp.helpdesk;
 
-import dev.hieplp.helpdesk.security.CurrentUser;
+import dev.hieplp.helpdesk.security.principal.Caller;
+import dev.hieplp.helpdesk.security.principal.CurrentCaller;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,8 +23,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Import(CurrentUserTests.ProbeController.class)
-class CurrentUserTests {
+@Import(CurrentCallerTests.ProbeController.class)
+class CurrentCallerTests {
 
     @Autowired
     MockMvc mvc;
@@ -34,13 +35,13 @@ class CurrentUserTests {
     @RestController
     static class ProbeController {
         @GetMapping("/probe/me")
-        Long me(@CurrentUser Long userId) {
-            return userId;
+        Long me(@CurrentCaller Caller caller) {
+            return caller.id();
         }
     }
 
     @Test
-    void currentUserResolvesUserId() throws Exception {
+    void currentCallerResolvesUserId() throws Exception {
         MvcResult login = mvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"email\":\"agent@b.co\",\"password\":\"secret\"}"))

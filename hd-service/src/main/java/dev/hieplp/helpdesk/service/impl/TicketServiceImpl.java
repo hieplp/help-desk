@@ -12,7 +12,7 @@ import dev.hieplp.helpdesk.model.enums.TicketStatus;
 import dev.hieplp.helpdesk.repository.CommentRepository;
 import dev.hieplp.helpdesk.repository.TicketRepository;
 import dev.hieplp.helpdesk.repository.UserRepository;
-import dev.hieplp.helpdesk.security.Caller;
+import dev.hieplp.helpdesk.security.principal.Caller;
 import dev.hieplp.helpdesk.service.TicketService;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -36,13 +36,13 @@ public class TicketServiceImpl implements TicketService {
     private final CommentRepository commentRepository;
 
     @Override
-    public TicketResponse create(Long requesterId, CreateTicketRequest request) {
+    public TicketResponse create(Caller caller, CreateTicketRequest request) {
         log.info(
                 "Creating ticket for requesterId={} category={} priority={}",
-                requesterId, request.category(), request.priority()
+                caller.id(), request.category(), request.priority()
         );
 
-        var requester = userRepository.getReferenceById(requesterId);
+        var requester = userRepository.getReferenceById(caller.id());
         var ticket = Ticket.builder()
                 .title(request.title())
                 .description(request.description())
@@ -52,7 +52,7 @@ public class TicketServiceImpl implements TicketService {
                 .requester(requester)
                 .build();
         var saved = ticketRepository.save(ticket);
-        log.info("Created ticket id={} for requesterId={}", saved.getId(), requesterId);
+        log.info("Created ticket id={} for requesterId={}", saved.getId(), caller.id());
 
         return TicketResponse.from(saved);
     }

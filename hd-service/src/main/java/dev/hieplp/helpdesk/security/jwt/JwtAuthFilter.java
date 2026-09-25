@@ -1,4 +1,4 @@
-package dev.hieplp.helpdesk.security;
+package dev.hieplp.helpdesk.security.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

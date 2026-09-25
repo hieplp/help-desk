@@ -1,7 +1,7 @@
 package dev.hieplp.helpdesk.config;
 
-import dev.hieplp.helpdesk.security.Caller;
-import dev.hieplp.helpdesk.security.CurrentCaller;
+import dev.hieplp.helpdesk.security.principal.Caller;
+import dev.hieplp.helpdesk.security.principal.CurrentCaller;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.context.annotation.Configuration;

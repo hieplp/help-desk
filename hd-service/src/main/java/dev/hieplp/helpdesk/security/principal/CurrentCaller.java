@@ -1,4 +1,4 @@
-package dev.hieplp.helpdesk.security;
+package dev.hieplp.helpdesk.security.principal;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
