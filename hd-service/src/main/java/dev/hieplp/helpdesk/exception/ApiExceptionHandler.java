@@ -1,6 +1,6 @@
 package dev.hieplp.helpdesk.exception;
 
-import dev.hieplp.helpdesk.model.dto.ErrorResponse;
+import dev.hieplp.helpdesk.model.dto.error.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

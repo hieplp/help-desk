@@ -1,4 +1,4 @@
-package dev.hieplp.helpdesk.model.dto;
+package dev.hieplp.helpdesk.model.dto.error;
 
 import org.springframework.http.HttpStatus;
 

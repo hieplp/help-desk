@@ -1,6 +1,6 @@
 package dev.hieplp.helpdesk.service;
 
-import dev.hieplp.helpdesk.model.dto.UserResponse;
+import dev.hieplp.helpdesk.model.dto.user.UserResponse;
 
 import java.util.List;
 

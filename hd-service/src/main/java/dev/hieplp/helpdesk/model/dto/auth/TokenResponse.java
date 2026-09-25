@@ -1,4 +1,4 @@
-package dev.hieplp.helpdesk.model.dto;
+package dev.hieplp.helpdesk.model.dto.auth;
 
 import org.springframework.security.oauth2.jwt.Jwt;
 

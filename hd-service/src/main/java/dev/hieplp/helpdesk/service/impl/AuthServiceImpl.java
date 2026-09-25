@@ -1,10 +1,10 @@
 package dev.hieplp.helpdesk.service.impl;
 
 import dev.hieplp.helpdesk.exception.ApiException;
-import dev.hieplp.helpdesk.model.dto.LoginRequest;
-import dev.hieplp.helpdesk.model.dto.LoginResponse;
-import dev.hieplp.helpdesk.model.dto.TokenResponse;
-import dev.hieplp.helpdesk.model.dto.UserResponse;
+import dev.hieplp.helpdesk.model.dto.auth.LoginRequest;
+import dev.hieplp.helpdesk.model.dto.auth.LoginResponse;
+import dev.hieplp.helpdesk.model.dto.auth.TokenResponse;
+import dev.hieplp.helpdesk.model.dto.user.UserResponse;
 import dev.hieplp.helpdesk.repository.UserRepository;
 import dev.hieplp.helpdesk.security.jwt.JwtService;
 import dev.hieplp.helpdesk.service.AuthService;
