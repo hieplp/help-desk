@@ -14,16 +14,28 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+/**
+ * Maps exceptions to the spec error body {@code {"code","message"}}.
+ * {@link ApiException} keeps its own status; malformed input → 400, unknown
+ * route → 404, wrong method → 405, anything else → 500.
+ */
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
+    /**
+     * Business errors: respond with the status the exception carries.
+     */
     @ExceptionHandler(ApiException.class)
     ResponseEntity<ErrorResponse> api(ApiException e) {
         return body(e.getStatus(), e.getMessage());
     }
 
+    /**
+     * Unreadable body, wrong media type, failed validation, or bad path/query
+     * type → 400.
+     */
     @ExceptionHandler({
             HttpMessageNotReadableException.class,
             HttpMediaTypeNotSupportedException.class,
@@ -34,16 +46,25 @@ public class ApiExceptionHandler {
         return body(HttpStatus.BAD_REQUEST, "Request is invalid");
     }
 
+    /**
+     * No route matched → 404.
+     */
     @ExceptionHandler(NoResourceFoundException.class)
     ResponseEntity<ErrorResponse> notFound(NoResourceFoundException e) {
         return body(HttpStatus.NOT_FOUND, "Not found");
     }
 
+    /**
+     * Route exists but the HTTP method does not → 405.
+     */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     ResponseEntity<ErrorResponse> methodNotAllowed(HttpRequestMethodNotSupportedException e) {
         return body(HttpStatus.METHOD_NOT_ALLOWED, "Method not allowed");
     }
 
+    /**
+     * Catch-all → 500; logged server-side, generic message to the client.
+     */
     @ExceptionHandler(Exception.class)
     ResponseEntity<ErrorResponse> internal(Exception e) {
         log.error("Unhandled exception", e);

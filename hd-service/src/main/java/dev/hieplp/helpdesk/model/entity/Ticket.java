@@ -11,6 +11,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * A support ticket. {@code requester} is the creator; {@code assignee} is a
+ * nullable agent. Status transitions follow {@code docs/api-rules.md} —
+ * {@code closed} is terminal.
+ */
 @Getter
 @Setter
 @Builder

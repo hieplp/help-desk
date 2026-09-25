@@ -7,6 +7,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * A help-desk account: requester or agent. {@code passwordHash} is bcrypt and
+ * never serialized.
+ */
 @Getter
 @Setter
 @Entity

@@ -7,6 +7,9 @@ import lombok.ToString;
 
 import java.time.Instant;
 
+/**
+ * A comment on a ticket. Immutable once written — no edit or delete.
+ */
 @Getter
 @Setter
 @Entity
