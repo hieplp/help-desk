@@ -29,3 +29,8 @@ export type TicketDetail = TicketListItem & {
   description: string
   comments: Comment[]
 }
+
+/** PATCH /tickets/:id response — list fields minus requesterName, plus description. */
+export type TicketResponse = Omit<TicketListItem, 'requesterName'> & {
+  description: string
+}

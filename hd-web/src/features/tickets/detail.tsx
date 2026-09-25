@@ -2,6 +2,8 @@ import { Link, Navigate, getRouteApi } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { useSession } from '../auth/session'
 import { useTicket } from './hooks/useTicket'
+import { CommentForm } from './components/CommentForm'
+import { TicketControls } from './components/TicketControls'
 
 const routeApi = getRouteApi('/tickets/$ticketId')
 
@@ -12,7 +14,7 @@ export function TicketDetailPage() {
 
   const { ticketId } = routeApi.useParams()
   const id = Number(ticketId)
-  const { ticket, error } = useTicket(mounted && !!session && id > 0, id)
+  const { ticket, error, setTicket } = useTicket(mounted && !!session && id > 0, id)
 
   if (!mounted) {
     return (
@@ -60,6 +62,14 @@ export function TicketDetailPage() {
             </p>
             <p className="whitespace-pre-wrap">{ticket.description}</p>
 
+            <TicketControls
+              ticket={ticket}
+              user={session.user}
+              onUpdated={(updated) =>
+                setTicket((t) => (t ? { ...t, ...updated } : t))
+              }
+            />
+
             <h2 className="demo-muted mt-8 mb-3 text-sm font-semibold uppercase tracking-wider">
               Comments
             </h2>
@@ -80,6 +90,14 @@ export function TicketDetailPage() {
                 ))}
               </ul>
             )}
+            <CommentForm
+              ticketId={ticket.id}
+              onAdded={(comment) =>
+                setTicket((t) =>
+                  t ? { ...t, comments: [...t.comments, comment] } : t,
+                )
+              }
+            />
           </>
         )}
       </section>
