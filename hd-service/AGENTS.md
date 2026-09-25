@@ -41,4 +41,5 @@ boundary; `config` holds security/JWT; `exception` holds the error handler. Full
 - Errors: `400` bad input, `401` bad/missing token, `403` wrong role, `404` missing — always
   `{ "code": "...", "message": "..." }`.
 - `static/` and `templates/` stay empty.
-- Commits follow `../docs/rules/git-commit-rules.md`.
+- Branches and commits follow `../docs/rules/git-commit-rules.md` — work on a `<type>/<slug>` branch, never commit
+  directly to `main`.

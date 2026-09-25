@@ -1,4 +1,4 @@
-# Help desk — git commit rules
+# Help desk — branch & git commit rules
 
 Conventional Commits. Matches existing history (`feat:`, `docs:`, `chore:`). Nothing else.
 
@@ -12,6 +12,18 @@ Conventional Commits. Matches existing history (`feat:`, `docs:`, `chore:`). Not
 - Subject: imperative, lowercase, no trailing period, max 72 chars.
 - One concern per commit. Split unrelated changes.
 - No scope, no body, no footer — add them when a commit actually needs explanation.
+
+## Branches
+
+```
+<type>/<slug>
+```
+
+- `type`: same set as commit types (`feat`, `fix`, `docs`, `chore`, `refactor`, `test`).
+- `slug`: short kebab-case description, e.g. `feat/ticket-comments`.
+- One branch per concern; branch names match the work, not the person.
+- Delete the branch after merge.
+- No `wip`, `temp`, `test123`, or personal-name branches.
 
 ## Types
 
