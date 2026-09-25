@@ -19,7 +19,8 @@ public record CreateTicketRequest(
     @NotBlank @Size(max = 120) String title,
     @NotBlank @Size(max = 4000) String description,
     @NotNull TicketCategory category,
-    @NotNull TicketPriority priority) {
+    @NotNull TicketPriority priority
+) {
 
   /** Trims title and description before validation. */
   public CreateTicketRequest {

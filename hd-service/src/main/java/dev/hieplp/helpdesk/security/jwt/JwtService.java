@@ -61,7 +61,7 @@ public class JwtService {
    * @param token raw JWT (without the {@code Bearer } prefix)
    * @return verified JWT
    * @throws org.springframework.security.oauth2.jwt.JwtException on bad signature, malformed token,
-   *     or expiry
+   *         or expiry
    */
   public Jwt parse(String token) {
     return decoder.decode(token);

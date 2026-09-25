@@ -19,7 +19,13 @@ What google-java-format enforces (not configurable — it's the Google style, ap
 - One blank line between members; no wildcard imports.
 
 The version is pinned at 1.28.0 because the Spotless default crashes on JDK 25 javac internals
-(`NoSuchMethodError` on `Log$DeferredDiagnosticHandler`).
+(`NoSuchMethodError` on `Log$DeferredDiagnosticHandler`). palantir-java-format has the same crash —
+not an option here.
+
+Two local rules ride on top via a custom Spotless step in `build.gradle.kts` (`localStyle`):
+
+- A parameter list wrapped across lines puts `) {` on its own line at declaration indent.
+- A Javadoc `@tag` continuation aligns under the tag argument (`*         text`, not `*     text`).
 
 **Workflow** — `actions/checkout@v4` → `actions/setup-java@v4` (Temurin 25) → `./gradlew spotlessCheck`.
 Fails the check on any violation.

@@ -35,7 +35,8 @@ public record TicketDetail(
     Long assigneeId,
     Instant createdAt,
     Instant updatedAt,
-    List<CommentResponse> comments) {
+    List<CommentResponse> comments
+) {
 
   /**
    * Maps a {@link Ticket} entity plus its comments to the detail shape.

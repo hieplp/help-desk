@@ -15,7 +15,8 @@ import java.util.Locale;
  */
 public record LoginRequest(
     @NotBlank @Size(max = 254) @Pattern(regexp = "^[^@]+@[^@]+\\.[^@]*$") String email,
-    @NotBlank @MaxBytes(72) String password) {
+    @NotBlank @MaxBytes(72) String password
+) {
 
   /** Normalizes input: trims both fields and lowercases the email. */
   public LoginRequest {

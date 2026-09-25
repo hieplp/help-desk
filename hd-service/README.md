@@ -15,7 +15,8 @@ Spring Boot 4.1.1 REST API for the help desk app. Java 25, Gradle Kotlin DSL, SQ
 ## Code style
 
 [Google Java Style](https://google.github.io/styleguide/javaguide.html), enforced by
-[Spotless](https://github.com/diffplug/spotless) + google-java-format 1.28.0 (`build.gradle.kts`).
+[Spotless](https://github.com/diffplug/spotless) + google-java-format 1.28.0 plus two local rules
+(wrapped-parameter `) {` line, Javadoc tag-continuation alignment) in `build.gradle.kts`.
 Run `./gradlew spotlessApply` before committing — CI fails on violations.
 
 ## CI

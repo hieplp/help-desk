@@ -36,7 +36,7 @@ public interface TicketService {
    * @param ticketId ticket id
    * @return ticket detail
    * @throws dev.hieplp.helpdesk.exception.ApiException 400 on non-positive id, 404 when missing or
-   *     owned by another requester
+   *         owned by another requester
    */
   TicketDetail get(Caller caller, Long ticketId);
 }
