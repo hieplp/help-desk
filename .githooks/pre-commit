@@ -1,0 +1,7 @@
+#!/bin/sh
+# Enable once: git config core.hooksPath .githooks
+# Run spotlessCheck only when the commit touches hd-service — hd-web has no checks yet.
+git diff --cached --name-only -- hd-service | grep -q . || exit 0
+
+echo "pre-commit: running hd-service spotlessCheck"
+cd hd-service && ./gradlew spotlessCheck

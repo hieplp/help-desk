@@ -59,3 +59,4 @@ Details: `hd-web/AGENTS.md`.
 - PRs: template enforces spec match + verified steps.
 - Branches: `<type>/<slug>`, never commit to `main` — see `docs/rules/git-commit-rules.md`.
 - Commits: Conventional Commits, one concern each.
+- Git hooks: run `git config core.hooksPath .githooks` to enforce formatting (`spotlessCheck`) and unit tests before commit/push.
