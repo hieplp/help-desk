@@ -6,11 +6,35 @@ and the Gradle wrapper (`./gradlew`, working directory `hd-service`).
 
 ## Code style — `hd-service-codestyle.yml`
 
-- Tool: Spotless (`com.diffplug.spotless`) with `googleJavaFormat()`, configured in `build.gradle.kts`.
-- Workflow runs `./gradlew spotlessCheck`.
-- Fix violations locally with `./gradlew spotlessApply` — never edit around the formatter.
+Enforces [Google Java Style](https://google.github.io/styleguide/javaguide.html) via
+[Spotless](https://github.com/diffplug/spotless) (`com.diffplug.spotless` 7.2.1) with
+`googleJavaFormat("1.28.0")`, configured in `build.gradle.kts`.
+
+What google-java-format enforces (not configurable — it's the Google style, applied mechanically):
+
+- 2-space indentation, 4-space continuation indent.
+- 100-column line limit; long lines are re-wrapped.
+- Import order: all `static` imports first, then non-static, ASCII sort; unused imports removed.
+- Braces on the same line (K&R); braces required even for single-statement bodies.
+- One blank line between members; no wildcard imports.
+
+The version is pinned at 1.28.0 because the Spotless default crashes on JDK 25 javac internals
+(`NoSuchMethodError` on `Log$DeferredDiagnosticHandler`).
+
+**Workflow** — `actions/checkout@v4` → `actions/setup-java@v4` (Temurin 25) → `./gradlew spotlessCheck`.
+Fails the check on any violation.
+
+**Local**
+
+```bash
+./gradlew spotlessCheck  # verify — same command CI runs
+./gradlew spotlessApply  # auto-fix all violations
+```
+
+Never edit around the formatter — run `spotlessApply` and commit the result.
 
 ## Unit tests — `hd-service-test.yml`
 
-- Workflow runs `./gradlew test`.
-- Fails the build on any test failure; Gradle's JUnit Platform config is unchanged.
+**Workflow** — `actions/checkout@v4` → `actions/setup-java@v4` (Temurin 25) → `./gradlew test`.
+Fails the build on any test failure. Gradle's existing `useJUnitPlatform()` config is unchanged;
+tests run against H2 (`testRuntimeOnly`), not the SQLite file.
