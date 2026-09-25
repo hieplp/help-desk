@@ -1,7 +1,6 @@
 package dev.hieplp.helpdesk.model.dto.ticket;
 
 import dev.hieplp.helpdesk.model.entity.Comment;
-
 import java.time.Instant;
 
 /**
@@ -14,26 +13,20 @@ import java.time.Instant;
  * @param createdAt when it was written
  */
 public record CommentResponse(
-        Long id,
-        Long ticketId,
-        Long authorId,
-        String body,
-        Instant createdAt
-) {
+    Long id, Long ticketId, Long authorId, String body, Instant createdAt) {
 
-    /**
-     * Maps a {@link Comment} entity to its API shape.
-     *
-     * @param comment entity
-     * @return comment with ticket and author ids
-     */
-    public static CommentResponse from(Comment comment) {
-        return new CommentResponse(
-                comment.getId(),
-                comment.getTicket().getId(),
-                comment.getAuthor().getId(),
-                comment.getBody(),
-                comment.getCreatedAt()
-        );
-    }
+  /**
+   * Maps a {@link Comment} entity to its API shape.
+   *
+   * @param comment entity
+   * @return comment with ticket and author ids
+   */
+  public static CommentResponse from(Comment comment) {
+    return new CommentResponse(
+        comment.getId(),
+        comment.getTicket().getId(),
+        comment.getAuthor().getId(),
+        comment.getBody(),
+        comment.getCreatedAt());
+  }
 }

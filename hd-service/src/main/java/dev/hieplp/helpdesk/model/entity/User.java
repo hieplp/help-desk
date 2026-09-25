@@ -7,33 +7,29 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-/**
- * A help-desk account: requester or agent. {@code passwordHash} is bcrypt and
- * never serialized.
- */
+/** A help-desk account: requester or agent. {@code passwordHash} is bcrypt and never serialized. */
 @Getter
 @Setter
 @Entity
 @Table(name = "users")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false, length = 120)
-    private String name;
+  @Column(nullable = false, length = 120)
+  private String name;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+  @Column(nullable = false, unique = true)
+  private String email;
 
-    @JsonIgnore
-    @ToString.Exclude
-    @Column(name = "password_hash", nullable = false, length = 100)
-    private String passwordHash;
+  @JsonIgnore
+  @ToString.Exclude
+  @Column(name = "password_hash", nullable = false, length = 100)
+  private String passwordHash;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private Role role;
-
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 20)
+  private Role role;
 }

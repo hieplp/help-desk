@@ -12,9 +12,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * A support ticket. {@code requester} is the creator; {@code assignee} is a
- * nullable agent. Status transitions follow {@code docs/api-rules.md} —
- * {@code closed} is terminal.
+ * A support ticket. {@code requester} is the creator; {@code assignee} is a nullable agent. Status
+ * transitions follow {@code docs/api-rules.md} — {@code closed} is terminal.
  */
 @Getter
 @Setter
@@ -22,43 +21,44 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tickets", indexes = {
-        @Index(name = "idx_tickets_requester", columnList = "requester_id"),
-        @Index(name = "idx_tickets_assignee", columnList = "assignee_id"),
-        @Index(name = "idx_tickets_status", columnList = "status")
-})
+@Table(
+    name = "tickets",
+    indexes = {
+      @Index(name = "idx_tickets_requester", columnList = "requester_id"),
+      @Index(name = "idx_tickets_assignee", columnList = "assignee_id"),
+      @Index(name = "idx_tickets_status", columnList = "status")
+    })
 public class Ticket extends Auditable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false, length = 120)
-    private String title;
+  @Column(nullable = false, length = 120)
+  private String title;
 
-    @Column(nullable = false, length = 4000)
-    private String description;
+  @Column(nullable = false, length = 4000)
+  private String description;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private TicketCategory category;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 20)
+  private TicketCategory category;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private TicketPriority priority;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 20)
+  private TicketPriority priority;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private TicketStatus status;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 20)
+  private TicketStatus status;
 
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "requester_id", nullable = false)
-    private User requester;
+  @ToString.Exclude
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "requester_id", nullable = false)
+  private User requester;
 
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assignee_id")
-    private User assignee;
-
+  @ToString.Exclude
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "assignee_id")
+  private User assignee;
 }

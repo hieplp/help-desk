@@ -11,26 +11,15 @@ import dev.hieplp.helpdesk.model.enums.Role;
  * @param email account email
  * @param role {@code requester} or {@code agent}
  */
-public record UserResponse(
-        Long id,
-        String name,
-        String email,
-        Role role
-) {
+public record UserResponse(Long id, String name, String email, Role role) {
 
-    /**
-     * Maps a {@link User} entity to its public shape.
-     *
-     * @param user entity
-     * @return id, name, email, role
-     */
-    public static UserResponse from(User user) {
-        return new UserResponse(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getRole()
-        );
-    }
-
+  /**
+   * Maps a {@link User} entity to its public shape.
+   *
+   * @param user entity
+   * @return id, name, email, role
+   */
+  public static UserResponse from(User user) {
+    return new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getRole());
+  }
 }
