@@ -1,7 +1,7 @@
 package dev.hieplp.helpdesk.controller;
 
-import dev.hieplp.helpdesk.model.dto.LoginRequest;
-import dev.hieplp.helpdesk.model.dto.LoginResponse;
+import dev.hieplp.helpdesk.model.dto.auth.LoginRequest;
+import dev.hieplp.helpdesk.model.dto.auth.LoginResponse;
 import dev.hieplp.helpdesk.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

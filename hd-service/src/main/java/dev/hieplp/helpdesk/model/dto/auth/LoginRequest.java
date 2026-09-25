@@ -1,4 +1,4 @@
-package dev.hieplp.helpdesk.model.dto;
+package dev.hieplp.helpdesk.model.dto.auth;
 
 import dev.hieplp.helpdesk.common.MaxBytes;
 import jakarta.validation.constraints.NotBlank;

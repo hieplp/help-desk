@@ -1,7 +1,7 @@
 package dev.hieplp.helpdesk.service;
 
-import dev.hieplp.helpdesk.model.dto.LoginRequest;
-import dev.hieplp.helpdesk.model.dto.LoginResponse;
+import dev.hieplp.helpdesk.model.dto.auth.LoginRequest;
+import dev.hieplp.helpdesk.model.dto.auth.LoginResponse;
 
 /**
  * Credential check and token issuing.

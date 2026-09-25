@@ -1,4 +1,4 @@
-package dev.hieplp.helpdesk.model.dto;
+package dev.hieplp.helpdesk.model.dto.user;
 
 import dev.hieplp.helpdesk.model.entity.User;
 import dev.hieplp.helpdesk.model.enums.Role;

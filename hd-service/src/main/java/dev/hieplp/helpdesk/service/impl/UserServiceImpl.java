@@ -1,6 +1,6 @@
 package dev.hieplp.helpdesk.service.impl;
 
-import dev.hieplp.helpdesk.model.dto.UserResponse;
+import dev.hieplp.helpdesk.model.dto.user.UserResponse;
 import dev.hieplp.helpdesk.repository.UserRepository;
 import dev.hieplp.helpdesk.service.UserService;
 import lombok.RequiredArgsConstructor;

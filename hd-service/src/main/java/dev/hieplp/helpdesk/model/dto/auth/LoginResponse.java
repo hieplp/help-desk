@@ -1,4 +1,6 @@
-package dev.hieplp.helpdesk.model.dto;
+package dev.hieplp.helpdesk.model.dto.auth;
+
+import dev.hieplp.helpdesk.model.dto.user.UserResponse;
 
 /**
  * {@code POST /auth/login} 200 body: signed token + the caller's profile.

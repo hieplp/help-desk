@@ -1,6 +1,6 @@
 package dev.hieplp.helpdesk.controller;
 
-import dev.hieplp.helpdesk.model.dto.UserResponse;
+import dev.hieplp.helpdesk.model.dto.user.UserResponse;
 import dev.hieplp.helpdesk.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,6 +1,6 @@
 package dev.hieplp.helpdesk.security.error;
 
-import dev.hieplp.helpdesk.model.dto.ErrorResponse;
+import dev.hieplp.helpdesk.model.dto.error.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
