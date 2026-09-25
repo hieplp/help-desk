@@ -1,3 +1,4 @@
+import { toast } from '#/components/toast'
 import { useUsers } from '#/features/users/hooks/useUsers'
 import type { Session } from '#/features/auth/session'
 import { usePatchTicket } from '../hooks/usePatchTicket'
@@ -26,8 +27,18 @@ export function TicketControls({
   if (ticket.status === 'closed') return null
 
   const apply = async (body: { status?: string; assigneeId?: number | null }) => {
+    const label =
+      body.status !== undefined
+        ? `Set status to ${body.status.replace('_', ' ')}?`
+        : body.assigneeId === null
+          ? 'Unassign this ticket?'
+          : 'Change assignee?'
+    if (!window.confirm(label)) return
     const updated = await patch(body)
-    if (updated) onUpdated(updated)
+    if (updated) {
+      toast('Ticket updated')
+      onUpdated(updated)
+    }
   }
 
   const isOwn = ticket.requesterId === user.id

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from '#/components/toast'
 import { useAddComment } from '../hooks/useAddComment'
 import type { Comment } from '../types'
 
@@ -15,10 +16,11 @@ export function CommentForm({
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     const text = body.trim()
-    if (!text) return
+    if (!text || !window.confirm('Post this comment?')) return
     const comment = await add(text)
     if (comment) {
       setBody('')
+      toast('Comment posted')
       onAdded(comment)
     }
   }
