@@ -2,10 +2,12 @@ package dev.hieplp.helpdesk.service.impl;
 
 import dev.hieplp.helpdesk.exception.ApiException;
 import dev.hieplp.helpdesk.model.dto.ticket.CommentResponse;
+import dev.hieplp.helpdesk.model.dto.ticket.CreateCommentRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.CreateTicketRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketDetail;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketListItem;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketResponse;
+import dev.hieplp.helpdesk.model.entity.Comment;
 import dev.hieplp.helpdesk.model.entity.Ticket;
 import dev.hieplp.helpdesk.model.enums.Role;
 import dev.hieplp.helpdesk.model.enums.TicketStatus;
@@ -24,6 +26,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Ticket business rules: requesters see and touch only their own tickets, agents see all. {@code
@@ -107,16 +111,7 @@ public class TicketServiceImpl implements TicketService {
   public TicketDetail get(Caller caller, Long ticketId) {
     log.info("Getting ticket id={} for callerId={} role={}", ticketId, caller.id(), caller.role());
 
-    if (ticketId <= 0) {
-      throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid ticket id");
-    }
-
-    var ticket =
-        ticketRepository
-            .findById(ticketId)
-            .filter(
-                t -> caller.role() == Role.AGENT || caller.id().equals(t.getRequester().getId()))
-            .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Ticket not found"));
+    var ticket = loadVisible(caller, ticketId);
 
     var comments =
         commentRepository.findByTicketIdOrderByIdAsc(ticketId).stream()
@@ -124,5 +119,108 @@ public class TicketServiceImpl implements TicketService {
             .toList();
 
     return TicketDetail.from(ticket, comments);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  @Transactional
+  public TicketResponse update(Caller caller, Long ticketId, ObjectNode patch) {
+    log.info("Patching ticket id={} for callerId={} role={}", ticketId, caller.id(), caller.role());
+
+    var ticket = loadVisible(caller, ticketId);
+
+    // Field-level 400s before role-level 403s (docs/rules/validation-rules.md).
+    if (patch == null || patch.isEmpty()) {
+      throw new ApiException(HttpStatus.BAD_REQUEST, "Patch body must not be empty");
+    }
+    for (String key : patch.propertyNames()) {
+      if (!key.equals("status") && !key.equals("assigneeId")) {
+        throw new ApiException(HttpStatus.BAD_REQUEST, "Unknown field: " + key);
+      }
+    }
+
+    TicketStatus status = null;
+    JsonNode statusNode = patch.get("status");
+    if (statusNode != null) {
+      if (!statusNode.isString()) {
+        throw new ApiException(HttpStatus.BAD_REQUEST, "status must be a string");
+      }
+      var raw = statusNode.asString();
+      status =
+          TicketStatus.fromJson(raw)
+              .filter(s -> s.toJson().equals(raw))
+              .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Unknown status"));
+    }
+
+    boolean assigneePresent = patch.has("assigneeId");
+    Long assigneeId = null;
+    JsonNode assigneeNode = patch.get("assigneeId");
+    if (assigneePresent && !assigneeNode.isNull()) {
+      if (!assigneeNode.isIntegralNumber()) {
+        throw new ApiException(HttpStatus.BAD_REQUEST, "assigneeId must be an integer or null");
+      }
+      assigneeId = assigneeNode.asLong();
+      var assignee =
+          userRepository
+              .findById(assigneeId)
+              .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Unknown assignee"));
+      if (assignee.getRole() != Role.AGENT) {
+        throw new ApiException(HttpStatus.BAD_REQUEST, "Assignee must be an agent");
+      }
+    }
+
+    // Role-level 403s after all field validation passed.
+    if (ticket.getStatus() == TicketStatus.CLOSED) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "Ticket is closed");
+    }
+    if (caller.role() == Role.REQUESTER) {
+      if (assigneePresent || status != TicketStatus.CLOSED) {
+        throw new ApiException(HttpStatus.FORBIDDEN, "Requesters may only close their own ticket");
+      }
+    } else if (status != null && status == TicketStatus.OPEN) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "Agents cannot reopen a ticket to open");
+    }
+
+    if (status != null) {
+      ticket.setStatus(status);
+    }
+    if (assigneePresent) {
+      ticket.setAssignee(assigneeId == null ? null : userRepository.getReferenceById(assigneeId));
+    }
+    var saved = ticketRepository.save(ticket);
+    log.info("Patched ticket id={} status={} assigneeId={}", saved.getId(),
+        saved.getStatus(), saved.getAssignee() == null ? null : saved.getAssignee().getId());
+    return TicketResponse.from(saved);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  @Transactional
+  public CommentResponse addComment(Caller caller, Long ticketId, CreateCommentRequest request) {
+    log.info("Adding comment to ticket id={} by callerId={}", ticketId, caller.id());
+
+    var ticket = loadVisible(caller, ticketId);
+
+    var comment = new Comment();
+    comment.setTicket(ticket);
+    comment.setAuthor(userRepository.getReferenceById(caller.id()));
+    comment.setBody(request.body());
+    var saved = commentRepository.save(comment);
+
+    return CommentResponse.from(saved);
+  }
+
+  /**
+   * Loads a ticket the caller may see: 400 on non-positive id, 404 when missing or owned by
+   * another requester (existence is not confirmed).
+   */
+  private Ticket loadVisible(Caller caller, Long ticketId) {
+    if (ticketId <= 0) {
+      throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid ticket id");
+    }
+    return ticketRepository
+        .findById(ticketId)
+        .filter(t -> caller.role() == Role.AGENT || caller.id().equals(t.getRequester().getId()))
+        .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Ticket not found"));
   }
 }

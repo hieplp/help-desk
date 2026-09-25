@@ -1,5 +1,7 @@
 package dev.hieplp.helpdesk.controller;
 
+import dev.hieplp.helpdesk.model.dto.ticket.CommentResponse;
+import dev.hieplp.helpdesk.model.dto.ticket.CreateCommentRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.CreateTicketRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketDetail;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketListItem;
@@ -13,12 +15,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Ticket endpoints under {@code /tickets}. Role and ownership rules live in {@link TicketService};
@@ -72,5 +76,40 @@ public class TicketController {
   @GetMapping("/{id}")
   public TicketDetail get(@CurrentCaller Caller caller, @PathVariable Long id) {
     return ticketService.get(caller, id);
+  }
+
+  /**
+   * Partially updates a ticket — only {@code status} and {@code assigneeId} are accepted; the raw
+   * JSON body is used so {@code assigneeId: null} (unassign) stays distinct from an absent key.
+   *
+   * @param caller authenticated user
+   * @param id ticket id
+   * @param patch JSON object with at least one allowed key
+   * @return 200 updated ticket, no comments
+   * @throws dev.hieplp.helpdesk.exception.ApiException 400 on bad input, 403 on a transition the
+   *     role cannot make or a closed ticket, 404 when missing or another requester's
+   */
+  @PatchMapping("/{id}")
+  public TicketResponse update(
+      @CurrentCaller Caller caller, @PathVariable Long id, @RequestBody ObjectNode patch) {
+    return ticketService.update(caller, id, patch);
+  }
+
+  /**
+   * Appends a comment to a ticket. Closed tickets still accept comments.
+   *
+   * @param caller authenticated user; becomes the author
+   * @param id ticket id
+   * @param request comment body
+   * @return 201 created comment
+   * @throws dev.hieplp.helpdesk.exception.ApiException 404 when missing or another requester's
+   */
+  @PostMapping("/{id}/comments")
+  public ResponseEntity<CommentResponse> addComment(
+      @CurrentCaller Caller caller,
+      @PathVariable Long id,
+      @Valid @RequestBody CreateCommentRequest request) {
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(ticketService.addComment(caller, id, request));
   }
 }
