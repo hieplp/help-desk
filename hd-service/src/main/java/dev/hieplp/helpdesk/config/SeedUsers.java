@@ -10,6 +10,10 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+ * Seeds one agent and one requester on startup (password {@code "secret"}).
+ * Skips any account that already exists — safe to run on every boot.
+ */
 @Component
 @RequiredArgsConstructor
 public class SeedUsers implements ApplicationRunner {
@@ -17,12 +21,18 @@ public class SeedUsers implements ApplicationRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Inserts the seed accounts after the context is up.
+     */
     @Override
     public void run(@NonNull ApplicationArguments args) {
         seed("agent@b.co", "Agent", Role.AGENT, "secret");
         seed("requester@b.co", "Requester", Role.REQUESTER, "secret");
     }
 
+    /**
+     * Creates the account unless the email is already taken.
+     */
     private void seed(
             String email,
             String name,

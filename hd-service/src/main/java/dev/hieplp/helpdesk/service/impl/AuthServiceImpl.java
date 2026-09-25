@@ -14,6 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Verifies credentials against the stored bcrypt hash and issues a JWT.
+ * On unknown email it still runs a bcrypt compare against {@link #DUMMY_HASH}
+ * so response timing does not reveal whether the account exists.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -25,6 +30,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
+    /** {@inheritDoc} */
     @Override
     public LoginResponse login(LoginRequest request) {
         log.info("Login attempt for email={}", request.email());

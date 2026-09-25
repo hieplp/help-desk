@@ -13,11 +13,18 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
+/**
+ * Writes the spec error body for authenticated callers who lack the role or own
+ * the wrong ticket: 403 {@code {"code":"forbidden","message":"Forbidden"}}.
+ */
 @RequiredArgsConstructor
 public class ApiAccessDeniedHandler implements AccessDeniedHandler {
 
     private final ObjectMapper objectMapper;
 
+    /**
+     * Responds 403 with the JSON error body.
+     */
     @Override
     public void handle(
             @NonNull HttpServletRequest request,

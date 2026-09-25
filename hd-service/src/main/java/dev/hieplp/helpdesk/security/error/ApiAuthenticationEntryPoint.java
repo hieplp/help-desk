@@ -13,11 +13,18 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
+/**
+ * Writes the spec error body for missing or bad Bearer tokens:
+ * 401 {@code {"code":"unauthorized","message":"Unauthorized"}}.
+ */
 @RequiredArgsConstructor
 public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;
 
+    /**
+     * Responds 401 with the JSON error body.
+     */
     @Override
     public void commence(
             @NonNull HttpServletRequest request,

@@ -8,6 +8,23 @@ import dev.hieplp.helpdesk.model.enums.TicketStatus;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * {@code GET /tickets/:id} 200 body: full ticket including description and
+ * comments (oldest first).
+ *
+ * @param id ticket id
+ * @param title short summary
+ * @param description full problem description
+ * @param category ticket category
+ * @param priority ticket priority
+ * @param status lifecycle status
+ * @param requesterId creator's user id
+ * @param requesterName creator's display name
+ * @param assigneeId assigned agent's id, null when unassigned
+ * @param createdAt when the ticket was filed
+ * @param updatedAt last change
+ * @param comments comments oldest first
+ */
 public record TicketDetail(
         Long id,
         String title,
@@ -23,6 +40,13 @@ public record TicketDetail(
         List<CommentResponse> comments
 ) {
 
+    /**
+     * Maps a {@link Ticket} entity plus its comments to the detail shape.
+     *
+     * @param ticket entity
+     * @param comments comments oldest first
+     * @return ticket detail; {@code assigneeId} is null when unassigned
+     */
     public static TicketDetail from(Ticket ticket, List<CommentResponse> comments) {
         return new TicketDetail(
                 ticket.getId(),

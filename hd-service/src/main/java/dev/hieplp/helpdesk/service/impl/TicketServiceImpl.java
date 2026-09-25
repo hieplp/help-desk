@@ -26,6 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Ticket business rules: requesters see and touch only their own tickets,
+ * agents see all. {@code closed} is terminal — no reopen.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -35,6 +39,7 @@ public class TicketServiceImpl implements TicketService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
 
+    /** {@inheritDoc} */
     @Override
     public TicketResponse create(Caller caller, CreateTicketRequest request) {
         log.info(
@@ -57,6 +62,7 @@ public class TicketServiceImpl implements TicketService {
         return TicketResponse.from(saved);
     }
 
+    /** {@inheritDoc} */
     @Override
     @Transactional(readOnly = true)
     public List<TicketListItem> list(Caller caller, String statusParam) {
@@ -90,6 +96,7 @@ public class TicketServiceImpl implements TicketService {
         return result;
     }
 
+    /** {@inheritDoc} */
     @Override
     @Transactional(readOnly = true)
     public TicketDetail get(Caller caller, Long ticketId) {
