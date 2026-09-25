@@ -81,15 +81,15 @@ public class TicketController {
 
   /**
    * Changes a ticket's status — the only patchable field. Agents may set {@code in_progress},
-   * {@code resolved}, or {@code closed} from any non-closed status; requesters may only set
-   * {@code closed} on their own ticket.
+   * {@code resolved}, or {@code closed} from any non-closed status; requesters may only set {@code
+   * closed} on their own ticket.
    *
    * @param caller authenticated user
    * @param id ticket id
    * @param request target status
    * @return 200 updated ticket, no comments
    * @throws dev.hieplp.helpdesk.exception.ApiException 400 on bad input, 403 on a transition the
-   *     role cannot make or a closed ticket, 404 when missing or another requester's
+   *         role cannot make or a closed ticket, 404 when missing or another requester's
    */
   @PatchMapping("/{id}")
   public TicketResponse updateStatus(
@@ -108,7 +108,7 @@ public class TicketController {
    * @param request assignee id or null
    * @return 200 updated ticket, no comments
    * @throws dev.hieplp.helpdesk.exception.ApiException 400 on bad input, 403 for requesters or a
-   *     closed ticket, 404 when missing or another requester's
+   *         closed ticket, 404 when missing or another requester's
    */
   @PatchMapping("/{id}/assignee")
   public TicketResponse updateAssignee(

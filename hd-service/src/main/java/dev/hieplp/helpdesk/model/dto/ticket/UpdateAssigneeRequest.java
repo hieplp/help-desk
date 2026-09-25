@@ -7,8 +7,8 @@ import lombok.Getter;
 
 /**
  * {@code PATCH /tickets/:id/assignee} body — requires the {@code assigneeId} key. The setter marks
- * the key as provided so an absent {@code assigneeId} (→ 400) stays distinct from
- * {@code assigneeId: null} (→ unassign). Type-mismatched values fail binding → 400.
+ * the key as provided so an absent {@code assigneeId} (→ 400) stays distinct from {@code
+ * assigneeId: null} (→ unassign). Type-mismatched values fail binding → 400.
  */
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = false)

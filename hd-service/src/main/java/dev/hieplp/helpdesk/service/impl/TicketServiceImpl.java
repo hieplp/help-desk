@@ -125,7 +125,11 @@ public class TicketServiceImpl implements TicketService {
   @Override
   @Transactional
   public TicketResponse updateStatus(Caller caller, Long ticketId, UpdateStatusRequest request) {
-    log.info("Updating status of ticket id={} for callerId={} role={}", ticketId, caller.id(), caller.role());
+    log.info(
+        "Updating status of ticket id={} for callerId={} role={}",
+        ticketId,
+        caller.id(),
+        caller.role());
 
     var ticket = loadVisible(caller, ticketId);
     var status = request.status();
@@ -152,7 +156,8 @@ public class TicketServiceImpl implements TicketService {
   @Override
   @Transactional
   public TicketResponse updateAssignee(
-      Caller caller, Long ticketId, UpdateAssigneeRequest request) {
+      Caller caller, Long ticketId, UpdateAssigneeRequest request
+  ) {
     log.info("Updating assignee of ticket id={} for callerId={}", ticketId, caller.id());
 
     var ticket = loadVisible(caller, ticketId);
@@ -180,7 +185,9 @@ public class TicketServiceImpl implements TicketService {
 
     ticket.setAssignee(assigneeId == null ? null : userRepository.getReferenceById(assigneeId));
     var saved = ticketRepository.save(ticket);
-    log.info("Updated ticket id={} assigneeId={}", saved.getId(),
+    log.info(
+        "Updated ticket id={} assigneeId={}",
+        saved.getId(),
         saved.getAssignee() == null ? null : saved.getAssignee().getId());
     return TicketResponse.from(saved);
   }
@@ -203,8 +210,8 @@ public class TicketServiceImpl implements TicketService {
   }
 
   /**
-   * Loads a ticket the caller may see: 400 on non-positive id, 404 when missing or owned by
-   * another requester (existence is not confirmed).
+   * Loads a ticket the caller may see: 400 on non-positive id, 404 when missing or owned by another
+   * requester (existence is not confirmed).
    */
   private Ticket loadVisible(Caller caller, Long ticketId) {
     if (ticketId <= 0) {

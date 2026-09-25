@@ -133,13 +133,9 @@ class CommentTests {
     var token = login("requester@b.co");
 
     var foreignResult =
-        comment(foreignId, token, "{\"body\":\"hi\"}")
-            .andExpect(status().isNotFound())
-            .andReturn();
+        comment(foreignId, token, "{\"body\":\"hi\"}").andExpect(status().isNotFound()).andReturn();
     var missingResult =
-        comment(999999, token, "{\"body\":\"hi\"}")
-            .andExpect(status().isNotFound())
-            .andReturn();
+        comment(999999, token, "{\"body\":\"hi\"}").andExpect(status().isNotFound()).andReturn();
 
     assertThat(foreignResult.getResponse().getContentAsString())
         .isEqualTo(missingResult.getResponse().getContentAsString());

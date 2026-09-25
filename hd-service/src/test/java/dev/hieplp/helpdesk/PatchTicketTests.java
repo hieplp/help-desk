@@ -150,8 +150,7 @@ class PatchTicketTests {
         .andExpect(jsonPath("$.status").value("closed"));
 
     var other = createTicket(token, "Other");
-    patchTicket(other, token, "{\"status\":\"in_progress\"}")
-        .andExpect(status().isForbidden());
+    patchTicket(other, token, "{\"status\":\"in_progress\"}").andExpect(status().isForbidden());
     patchTicket(other, token, "{\"status\":\"resolved\"}").andExpect(status().isForbidden());
     patchTicket(other, token, "{\"status\":\"open\"}").andExpect(status().isForbidden());
   }
