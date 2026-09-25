@@ -19,6 +19,7 @@ import java.util.List;
  * @param requesterId creator's user id
  * @param requesterName creator's display name
  * @param assigneeId assigned agent's id, null when unassigned
+ * @param assigneeName assigned agent's display name, null when unassigned
  * @param createdAt when the ticket was filed
  * @param updatedAt last change
  * @param comments comments oldest first
@@ -33,6 +34,7 @@ public record TicketDetail(
     Long requesterId,
     String requesterName,
     Long assigneeId,
+    String assigneeName,
     Instant createdAt,
     Instant updatedAt,
     List<CommentResponse> comments
@@ -56,6 +58,7 @@ public record TicketDetail(
         ticket.getRequester().getId(),
         ticket.getRequester().getName(),
         ticket.getAssignee() == null ? null : ticket.getAssignee().getId(),
+        ticket.getAssignee() == null ? null : ticket.getAssignee().getName(),
         ticket.getCreatedAt(),
         ticket.getUpdatedAt(),
         comments);

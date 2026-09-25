@@ -54,7 +54,7 @@ Agent only. For the assign dropdown. Password never leaves the server.
 
 ## Tickets
 
-Fields: `id`, `title`, `description`, `category`, `priority`, `status`, `requesterId`, `assigneeId` (nullable), `createdAt`, `updatedAt`.
+Fields: `id`, `title`, `description`, `category`, `priority`, `status`, `requesterId`, `requesterName`, `assigneeId` (nullable), `assigneeName` (nullable), `createdAt`, `updatedAt`.
 
 List items omit `description`. Detail includes `description` and `comments`.
 
@@ -124,6 +124,7 @@ Requester: own ticket only, else `404`. Agent: any ticket. Closed tickets still 
   "id": 9,
   "ticketId": 3,
   "authorId": 1,
+  "authorName": "Ada",
   "body": "Tried a different charger.",
   "createdAt": "2026-09-22T10:00:00Z"
 }

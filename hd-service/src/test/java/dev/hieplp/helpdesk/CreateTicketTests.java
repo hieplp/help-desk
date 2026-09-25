@@ -72,6 +72,7 @@ class CreateTicketTests {
                 "status",
                 "requesterId",
                 "assigneeId",
+                "assigneeName",
                 "createdAt",
                 "updatedAt"));
     assertThat(body.get("title").asString()).isEqualTo("Laptop will not boot");

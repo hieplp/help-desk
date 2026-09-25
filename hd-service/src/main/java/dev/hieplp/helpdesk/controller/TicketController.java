@@ -91,7 +91,10 @@ public class TicketController {
    */
   @PatchMapping("/{id}")
   public TicketResponse update(
-      @CurrentCaller Caller caller, @PathVariable Long id, @RequestBody ObjectNode patch) {
+      @CurrentCaller Caller caller,
+      @PathVariable Long id,
+      @RequestBody ObjectNode patch
+  ) {
     return ticketService.update(caller, id, patch);
   }
 
@@ -108,7 +111,8 @@ public class TicketController {
   public ResponseEntity<CommentResponse> addComment(
       @CurrentCaller Caller caller,
       @PathVariable Long id,
-      @Valid @RequestBody CreateCommentRequest request) {
+      @Valid @RequestBody CreateCommentRequest request
+  ) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(ticketService.addComment(caller, id, request));
   }

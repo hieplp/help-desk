@@ -53,7 +53,11 @@ export function TicketControls({
               <button
                 key={s.value}
                 type="button"
-                className="demo-button"
+                className={
+                  s.value === 'closed'
+                    ? 'demo-button demo-button-danger'
+                    : 'demo-button'
+                }
                 disabled={pending || ticket.status === s.value}
                 onClick={() => apply({ status: s.value })}
               >
@@ -64,7 +68,7 @@ export function TicketControls({
           <label className="flex flex-col gap-1.5 text-sm font-semibold text-[var(--sea-ink)]">
             Assignee
             <select
-              className="demo-input"
+              className="demo-input max-w-xs"
               disabled={pending || users === null}
               value={ticket.assigneeId ?? ''}
               onChange={(e) =>
@@ -89,7 +93,7 @@ export function TicketControls({
         <div>
           <button
             type="button"
-            className="demo-button"
+            className="demo-button demo-button-danger"
             disabled={pending}
             onClick={() => apply({ status: 'closed' })}
           >
