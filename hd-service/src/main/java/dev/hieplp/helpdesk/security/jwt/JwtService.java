@@ -1,4 +1,4 @@
-package dev.hieplp.helpdesk.security;
+package dev.hieplp.helpdesk.security.jwt;
 
 import dev.hieplp.helpdesk.model.entity.User;
 import org.springframework.beans.factory.annotation.Value;

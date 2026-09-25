@@ -1,6 +1,7 @@
-package dev.hieplp.helpdesk.security;
+package dev.hieplp.helpdesk.security.principal;
 
 import dev.hieplp.helpdesk.model.enums.Role;
+import dev.hieplp.helpdesk.security.jwt.JwtAuthFilter;
 import org.springframework.security.core.Authentication;
 
 /**

@@ -2,10 +2,10 @@ package dev.hieplp.helpdesk.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import dev.hieplp.helpdesk.model.enums.Role;
-import dev.hieplp.helpdesk.security.ApiAccessDeniedHandler;
-import dev.hieplp.helpdesk.security.ApiAuthenticationEntryPoint;
-import dev.hieplp.helpdesk.security.JwtAuthFilter;
-import dev.hieplp.helpdesk.security.JwtService;
+import dev.hieplp.helpdesk.security.error.ApiAccessDeniedHandler;
+import dev.hieplp.helpdesk.security.error.ApiAuthenticationEntryPoint;
+import dev.hieplp.helpdesk.security.jwt.JwtAuthFilter;
+import dev.hieplp.helpdesk.security.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -4,9 +4,8 @@ import dev.hieplp.helpdesk.model.dto.ticket.CreateTicketRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketDetail;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketListItem;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketResponse;
-import dev.hieplp.helpdesk.security.Caller;
-import dev.hieplp.helpdesk.security.CurrentCaller;
-import dev.hieplp.helpdesk.security.CurrentUser;
+import dev.hieplp.helpdesk.security.principal.Caller;
+import dev.hieplp.helpdesk.security.principal.CurrentCaller;
 import dev.hieplp.helpdesk.service.TicketService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +30,10 @@ public class TicketController {
 
     @PostMapping
     public ResponseEntity<TicketResponse> create(
-            @CurrentUser Long userId,
+            @CurrentCaller Caller caller,
             @Valid @RequestBody CreateTicketRequest request
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.create(userId, request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.create(caller, request));
     }
 
     @GetMapping

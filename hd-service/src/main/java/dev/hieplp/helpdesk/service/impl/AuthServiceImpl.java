@@ -6,7 +6,7 @@ import dev.hieplp.helpdesk.model.dto.LoginResponse;
 import dev.hieplp.helpdesk.model.dto.TokenResponse;
 import dev.hieplp.helpdesk.model.dto.UserResponse;
 import dev.hieplp.helpdesk.repository.UserRepository;
-import dev.hieplp.helpdesk.security.JwtService;
+import dev.hieplp.helpdesk.security.jwt.JwtService;
 import dev.hieplp.helpdesk.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
