@@ -38,6 +38,7 @@ class TicketTests {
           "requesterId",
           "requesterName",
           "assigneeId",
+          "assigneeName",
           "createdAt",
           "updatedAt");
 

@@ -2,8 +2,22 @@ import { Link, Navigate, getRouteApi } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { useSession } from '../auth/session'
 import { useTicket } from './hooks/useTicket'
+import { CommentForm } from './components/CommentForm'
+import { TicketControls } from './components/TicketControls'
+import { StatusPill } from './components/StatusPill'
 
 const routeApi = getRouteApi('/tickets/$ticketId')
+
+function DetailSkeleton() {
+  return (
+    <>
+      <div className="demo-skeleton mb-4 h-3 w-24" />
+      <div className="demo-skeleton mb-3 h-9 w-2/3" />
+      <div className="demo-skeleton mb-6 h-4 w-1/2" />
+      <div className="demo-skeleton h-20 w-full" />
+    </>
+  )
+}
 
 export function TicketDetailPage() {
   const session = useSession((s) => s.session)
@@ -12,13 +26,13 @@ export function TicketDetailPage() {
 
   const { ticketId } = routeApi.useParams()
   const id = Number(ticketId)
-  const { ticket, error } = useTicket(mounted && !!session && id > 0, id)
+  const { ticket, error, setTicket } = useTicket(mounted && !!session && id > 0, id)
 
   if (!mounted) {
     return (
       <main className="demo-page">
         <section className="demo-panel">
-          <p className="demo-muted m-0">Loading…</p>
+          <DetailSkeleton />
         </section>
       </main>
     )
@@ -34,23 +48,24 @@ export function TicketDetailPage() {
           </Link>
         </p>
         {error && (
-          <p className="demo-alert demo-alert-danger m-0">{error}</p>
+          <>
+            <p className="demo-alert demo-alert-danger m-0">{error}</p>
+            <p className="demo-muted mt-3 mb-0 text-sm">
+              The ticket may not exist, or you may not have access to it.
+            </p>
+          </>
         )}
-        {!error && ticket === null && (
-          <p className="demo-muted m-0">Loading…</p>
-        )}
+        {!error && ticket === null && <DetailSkeleton />}
         {ticket && (
           <>
             <p className="island-kicker mb-2">Ticket #{ticket.id}</p>
             <h1 className="demo-title mb-4">{ticket.title}</h1>
             <div className="mb-6 flex flex-wrap gap-2">
-              <span className="demo-pill">{ticket.status}</span>
+              <StatusPill status={ticket.status} />
               <span className="demo-pill">{ticket.category}</span>
               <span className="demo-pill">{ticket.priority}</span>
               <span className="demo-pill">
-                {ticket.assigneeId === null
-                  ? 'Unassigned'
-                  : `Assignee #${ticket.assigneeId}`}
+                {ticket.assigneeName ?? 'Unassigned'}
               </span>
             </div>
             <p className="demo-muted mb-6 text-xs">
@@ -59,6 +74,14 @@ export function TicketDetailPage() {
               {new Date(ticket.updatedAt).toLocaleString()}
             </p>
             <p className="whitespace-pre-wrap">{ticket.description}</p>
+
+            <TicketControls
+              ticket={ticket}
+              user={session.user}
+              onUpdated={(updated) =>
+                setTicket((t) => (t ? { ...t, ...updated } : t))
+              }
+            />
 
             <h2 className="demo-muted mt-8 mb-3 text-sm font-semibold uppercase tracking-wider">
               Comments
@@ -73,13 +96,21 @@ export function TicketDetailPage() {
                     className="rounded-xl border border-(--line) p-3"
                   >
                     <p className="demo-muted mb-1 text-xs">
-                      #{c.authorId} · {new Date(c.createdAt).toLocaleString()}
+                      {c.authorName} · {new Date(c.createdAt).toLocaleString()}
                     </p>
                     <p className="m-0 whitespace-pre-wrap">{c.body}</p>
                   </li>
                 ))}
               </ul>
             )}
+            <CommentForm
+              ticketId={ticket.id}
+              onAdded={(comment) =>
+                setTicket((t) =>
+                  t ? { ...t, comments: [...t.comments, comment] } : t,
+                )
+              }
+            />
           </>
         )}
       </section>

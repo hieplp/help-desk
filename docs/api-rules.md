@@ -54,7 +54,7 @@ Agent only. For the assign dropdown. Password never leaves the server.
 
 ## Tickets
 
-Fields: `id`, `title`, `description`, `category`, `priority`, `status`, `requesterId`, `assigneeId` (nullable), `createdAt`, `updatedAt`.
+Fields: `id`, `title`, `description`, `category`, `priority`, `status`, `requesterId`, `requesterName`, `assigneeId` (nullable), `assigneeName` (nullable), `createdAt`, `updatedAt`.
 
 List items omit `description`. Detail includes `description` and `comments`.
 
@@ -90,13 +90,11 @@ Requester: own ticket only, else `404` (do not confirm it exists). Agent: any ti
 
 ### `PATCH /tickets/:id`
 
-Partial. Only `status` and `assigneeId`. Empty body → `400`.
+Status only — the single patchable field.
 
 ```json
-{ "status": "in_progress", "assigneeId": 2 }
+{ "status": "in_progress" }
 ```
-
-`assigneeId: null` unassigns. Assignee must be an agent, else `400`.
 
 Status rules:
 
@@ -104,6 +102,18 @@ Status rules:
 - Requester may set only `closed`, and only on their own ticket.
 - `closed` is terminal. No reopen.
 - Anything else → `403`.
+
+`200` updated ticket, no comments.
+
+### `PATCH /tickets/:id/assignee`
+
+Agent only — requester → `403`.
+
+```json
+{ "assigneeId": 2 }
+```
+
+`assigneeId` required. `null` unassigns. Assignee must be an agent, else `400`. Closed tickets → `403`.
 
 `200` updated ticket, no comments.
 
@@ -124,6 +134,7 @@ Requester: own ticket only, else `404`. Agent: any ticket. Closed tickets still 
   "id": 9,
   "ticketId": 3,
   "authorId": 1,
+  "authorName": "Ada",
   "body": "Tried a different charger.",
   "createdAt": "2026-09-22T10:00:00Z"
 }

@@ -25,6 +25,8 @@
   --link-bg-hover: rgba(255, 255, 255, 0.9);
   --hero-a: rgba(79, 184, 178, 0.36);
   --hero-b: rgba(47, 106, 74, 0.2);
+  --amber: #9a6a1f;
+  --amber-line: rgba(193, 126, 42, 0.45);
 }
 
 :root[data-theme="dark"] {
@@ -47,6 +49,8 @@
   --link-bg-hover: rgba(24, 44, 49, 0.8);
   --hero-a: rgba(96, 215, 207, 0.18);
   --hero-b: rgba(110, 200, 154, 0.12);
+  --amber: #e0a94f;
+  --amber-line: rgba(224, 169, 79, 0.4);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -69,6 +73,8 @@
     --link-bg-hover: rgba(24, 44, 49, 0.8);
     --hero-a: rgba(96, 215, 207, 0.18);
     --hero-b: rgba(110, 200, 154, 0.12);
+    --amber: #e0a94f;
+    --amber-line: rgba(224, 169, 79, 0.4);
   }
 }
 
@@ -217,6 +223,31 @@ a:hover {
   transform: none;
 }
 
+.demo-button-danger {
+  border-color: rgba(196, 71, 71, 0.4);
+  background: color-mix(in oklab, rgba(196, 71, 71, 0.2), var(--surface-strong));
+}
+
+.demo-button-danger:hover {
+  background: color-mix(in oklab, rgba(196, 71, 71, 0.28), var(--surface-strong));
+}
+
+.demo-skeleton {
+  border-radius: 0.5rem;
+  background: color-mix(in oklab, var(--sea-ink) 8%, transparent);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
 @layer components {
   .demo-pill {
     display: inline-flex;
@@ -229,6 +260,26 @@ a:hover {
     padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
     font-weight: 700;
+  }
+
+  .status-open {
+    border-color: color-mix(in oklab, var(--lagoon-deep) 45%, var(--line));
+    color: var(--lagoon-deep);
+  }
+
+  .status-in_progress {
+    border-color: var(--amber-line);
+    color: var(--amber);
+  }
+
+  .status-resolved {
+    border-color: color-mix(in oklab, var(--palm) 50%, var(--line));
+    color: var(--palm);
+  }
+
+  .status-closed {
+    color: var(--sea-ink-soft);
+    opacity: 0.7;
   }
 }
 

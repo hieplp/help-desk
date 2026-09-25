@@ -9,11 +9,12 @@ import java.time.Instant;
  * @param id comment id
  * @param ticketId owning ticket
  * @param authorId comment author
+ * @param authorName comment author's display name
  * @param body comment text
  * @param createdAt when it was written
  */
 public record CommentResponse(
-    Long id, Long ticketId, Long authorId, String body, Instant createdAt
+    Long id, Long ticketId, Long authorId, String authorName, String body, Instant createdAt
 ) {
 
   /**
@@ -27,6 +28,7 @@ public record CommentResponse(
         comment.getId(),
         comment.getTicket().getId(),
         comment.getAuthor().getId(),
+        comment.getAuthor().getName(),
         comment.getBody(),
         comment.getCreatedAt());
   }

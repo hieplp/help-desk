@@ -13,6 +13,7 @@ export type TicketListItem = {
   requesterId: number
   requesterName: string
   assigneeId: number | null
+  assigneeName: string | null
   createdAt: string
   updatedAt: string
 }
@@ -21,6 +22,7 @@ export type Comment = {
   id: number
   ticketId: number
   authorId: number
+  authorName: string
   body: string
   createdAt: string
 }
@@ -28,4 +30,9 @@ export type Comment = {
 export type TicketDetail = TicketListItem & {
   description: string
   comments: Comment[]
+}
+
+/** PATCH /tickets/:id response — full ticket fields minus requesterName, no comments. */
+export type TicketResponse = Omit<TicketListItem, 'requesterName'> & {
+  description: string
 }

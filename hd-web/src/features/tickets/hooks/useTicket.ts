@@ -23,5 +23,5 @@ export function useTicket(enabled: boolean, id: number) {
     }
   }, [enabled, id])
 
-  return { ticket, error }
+  return { ticket, error, setTicket }
 }

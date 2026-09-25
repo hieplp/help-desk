@@ -1,9 +1,13 @@
 package dev.hieplp.helpdesk.controller;
 
+import dev.hieplp.helpdesk.model.dto.ticket.CommentResponse;
+import dev.hieplp.helpdesk.model.dto.ticket.CreateCommentRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.CreateTicketRequest;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketDetail;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketListItem;
 import dev.hieplp.helpdesk.model.dto.ticket.TicketResponse;
+import dev.hieplp.helpdesk.model.dto.ticket.UpdateAssigneeRequest;
+import dev.hieplp.helpdesk.model.dto.ticket.UpdateStatusRequest;
 import dev.hieplp.helpdesk.security.principal.Caller;
 import dev.hieplp.helpdesk.security.principal.CurrentCaller;
 import dev.hieplp.helpdesk.service.TicketService;
@@ -13,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -72,5 +77,64 @@ public class TicketController {
   @GetMapping("/{id}")
   public TicketDetail get(@CurrentCaller Caller caller, @PathVariable Long id) {
     return ticketService.get(caller, id);
+  }
+
+  /**
+   * Changes a ticket's status — the only patchable field. Agents may set {@code in_progress},
+   * {@code resolved}, or {@code closed} from any non-closed status; requesters may only set {@code
+   * closed} on their own ticket.
+   *
+   * @param caller authenticated user
+   * @param id ticket id
+   * @param request target status
+   * @return 200 updated ticket, no comments
+   * @throws dev.hieplp.helpdesk.exception.ApiException 400 on bad input, 403 on a transition the
+   *         role cannot make or a closed ticket, 404 when missing or another requester's
+   */
+  @PatchMapping("/{id}")
+  public TicketResponse updateStatus(
+      @CurrentCaller Caller caller,
+      @PathVariable Long id,
+      @Valid @RequestBody UpdateStatusRequest request
+  ) {
+    return ticketService.updateStatus(caller, id, request);
+  }
+
+  /**
+   * Assigns a ticket to an agent; {@code assigneeId: null} unassigns. Agent-only.
+   *
+   * @param caller authenticated user
+   * @param id ticket id
+   * @param request assignee id or null
+   * @return 200 updated ticket, no comments
+   * @throws dev.hieplp.helpdesk.exception.ApiException 400 on bad input, 403 for requesters or a
+   *         closed ticket, 404 when missing or another requester's
+   */
+  @PatchMapping("/{id}/assignee")
+  public TicketResponse updateAssignee(
+      @CurrentCaller Caller caller,
+      @PathVariable Long id,
+      @RequestBody UpdateAssigneeRequest request
+  ) {
+    return ticketService.updateAssignee(caller, id, request);
+  }
+
+  /**
+   * Appends a comment to a ticket. Closed tickets still accept comments.
+   *
+   * @param caller authenticated user; becomes the author
+   * @param id ticket id
+   * @param request comment body
+   * @return 201 created comment
+   * @throws dev.hieplp.helpdesk.exception.ApiException 404 when missing or another requester's
+   */
+  @PostMapping("/{id}/comments")
+  public ResponseEntity<CommentResponse> addComment(
+      @CurrentCaller Caller caller,
+      @PathVariable Long id,
+      @Valid @RequestBody CreateCommentRequest request
+  ) {
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(ticketService.addComment(caller, id, request));
   }
 }

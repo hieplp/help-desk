@@ -17,6 +17,7 @@ import java.time.Instant;
  * @param status lifecycle status
  * @param requesterId creator's user id
  * @param assigneeId assigned agent's id, null when unassigned
+ * @param assigneeName assigned agent's display name, null when unassigned
  * @param createdAt when the ticket was filed
  * @param updatedAt last change
  */
@@ -29,6 +30,7 @@ public record TicketResponse(
     TicketStatus status,
     Long requesterId,
     Long assigneeId,
+    String assigneeName,
     Instant createdAt,
     Instant updatedAt
 ) {
@@ -49,6 +51,7 @@ public record TicketResponse(
         ticket.getStatus(),
         ticket.getRequester().getId(),
         ticket.getAssignee() == null ? null : ticket.getAssignee().getId(),
+        ticket.getAssignee() == null ? null : ticket.getAssignee().getName(),
         ticket.getCreatedAt(),
         ticket.getUpdatedAt());
   }

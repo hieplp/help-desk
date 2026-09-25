@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useSession } from '../auth/session'
 import { useTickets } from './hooks/useTickets'
 import { STATUSES, type Status } from './types'
+import { StatusPill } from './components/StatusPill'
 
 const routeApi = getRouteApi('/tickets/')
 
@@ -92,14 +93,12 @@ export function TicketsPage() {
                   <td className="py-2.5">{t.category}</td>
                   <td className="py-2.5">{t.priority}</td>
                   <td className="py-2.5">
-                    <span className="demo-pill">{t.status}</span>
+                    <StatusPill status={t.status} />
                   </td>
                   <td className="py-2.5">{t.requesterName}</td>
                   <td className="py-2.5">
-                    {t.assigneeId === null ? (
+                    {t.assigneeName ?? (
                       <span className="demo-muted">Unassigned</span>
-                    ) : (
-                      `#${t.assigneeId}`
                     )}
                   </td>
                   <td className="demo-muted py-2.5">

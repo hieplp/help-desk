@@ -3,6 +3,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
+import { Toaster } from '../components/Toaster'
 import { getSession } from '#/features/auth/session'
 
 import appCss from '../styles.css?url'
@@ -50,6 +51,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Header />
         <div className="flex flex-1 flex-col">{children}</div>
         <Footer />
+        <Toaster />
         <TanStackDevtools
           config={{
             position: 'bottom-right',
