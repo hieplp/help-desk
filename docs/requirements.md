@@ -49,6 +49,27 @@ No admin role, no self-registration. Accounts are seeded by whoever deploys it.
 - A4: Comment on any ticket.
 - A5: List users to pick an assignee.
 
+## Ticket flow
+
+```mermaid
+sequenceDiagram
+    actor R as Requester
+    actor A as Agent
+    participant W as hd-web
+    participant S as hd-service
+    R->>W: email + password
+    W->>S: POST /auth/login
+    S-->>W: JWT (8h) + user
+    R->>W: file ticket
+    W->>S: POST /tickets
+    S-->>W: 201 — open, unassigned
+    A->>W: triage
+    W->>S: PATCH /tickets/:id (assignee, status)
+    S-->>W: updated ticket
+    R->>W: comment / close own ticket
+    W->>S: POST /tickets/:id/comments · PATCH status=closed
+```
+
 ## Business rules
 
 ### Permission matrix
@@ -64,6 +85,19 @@ No admin role, no self-registration. Accounts are seeded by whoever deploys it.
 | List users | — | ✓ |
 
 ### Status lifecycle
+
+```mermaid
+stateDiagram-v2
+    [*] --> open: POST /tickets
+    open --> in_progress: agent
+    open --> resolved: agent
+    open --> closed: agent / requester (own)
+    in_progress --> resolved: agent
+    in_progress --> closed: agent / requester (own)
+    resolved --> in_progress: agent
+    resolved --> closed: agent / requester (own)
+    closed --> [*]: terminal
+```
 
 `open` → `in_progress` → `resolved` → `closed`.
 

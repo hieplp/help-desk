@@ -67,9 +67,16 @@ Table: name, email, role. Exists to feed the future assign dropdown.
 
 ## Navigation map
 
+```mermaid
+flowchart LR
+    login["/login"] -->|"success"| home["/"]
+    home -->|"signed out"| login
+    home -->|"signed in"| new["/tickets/new"]
+    home --> tickets["/tickets"]
+    new -->|"created"| home
+    tickets -->|"row"| detail["/tickets/$ticketId"]
+    detail -->|"back"| tickets
+    users["/users — agent only"] -.->|"header link"| home
 ```
-/ ── signed out ──▶ /login ── success ──▶ /
-/ ── signed in ───▶ /tickets/new, /tickets
-/tickets ── row click ──▶ /tickets/$ticketId ── back ──▶ /tickets
-header: Tickets · New ticket · Users (agent) · Log out
-```
+
+Header links: `Tickets`, `New ticket` (desktop), `Users` (agent), `Log out` / `Log in`, theme toggle.
