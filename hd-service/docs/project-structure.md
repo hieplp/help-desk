@@ -35,9 +35,9 @@ src/main/java/dev/hieplp/helpdesk/
   model/
     entity/       JPA entities
     dto/          request and response types
-    enums/        enums stored as lowercase names
+    enums/        enums stored as uppercase names (`@Enumerated(STRING)`); JSON serializes lowercase
   exception/      ApiException and the handler
-  security/       JwtService, JwtAuthFilter
+  security/       jwt/ (JwtService, JwtAuthFilter), principal/ (Caller, @CurrentCaller), error/ handlers
   common/         shared helpers (MaxBytes validator)
 ```
 

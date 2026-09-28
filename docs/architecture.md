@@ -24,7 +24,7 @@ browser ── :3000 ── hd-web (TanStack Start, Vite dev proxy /api → :808
 
 ## Request path
 
-1. `hd-web` route renders a feature page; the page calls `api.*` (`src/api/client.ts`).
+1. `hd-web` route renders a feature page; the page calls `api.*` (`hd-web/src/api/client.ts`).
 2. Client attaches `Authorization: Bearer <token>` from the session store (`hd.session`).
 3. `JwtAuthFilter` verifies the token (HS256) and installs a `Caller` (id + role).
 4. Controller binds HTTP (`@CurrentCaller`, `@Valid` body) and delegates to the service.

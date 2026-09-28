@@ -16,7 +16,7 @@ Server-side input validation. Matches `docs/api-rules.md`. Client validation is 
 | Field | Rules |
 |---|---|
 | `email` | Required, valid email shape, max 254. Case-insensitive match. |
-| `password` | Required, min 8, max 72 (bcrypt limit). |
+| `password` | Required, max 72 UTF-8 bytes (bcrypt truncates there). No minimum — login has none. |
 | `name` | Required, max 120. |
 | `title` | Required, max 120. |
 | `description` | Required, max 4000. |

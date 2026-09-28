@@ -26,6 +26,11 @@ src/
     __root.tsx        shell, theme init script
     index.tsx
     login.tsx
+    users.tsx
+    tickets/
+      index.tsx       list
+      $ticketId.tsx   detail
+      new.tsx         create
   features/
     auth/
       session.ts      zustand store + persist
@@ -35,7 +40,14 @@ src/
         components/
         hooks/
     tickets/
+      index.tsx       list page
+      detail.tsx      detail page
+      types.ts        shared ticket types
+      hooks/
       new/            create-ticket page + form/hook/schema
+    users/
+      index.tsx       user list page
+      hooks/
   api/
     client.ts         fetch wrapper; all HTTP goes here
   components/         shared UI

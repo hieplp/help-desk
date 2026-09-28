@@ -8,8 +8,8 @@ JSON over HTTP. One backend. Matches `docs/features.md`. Nothing else.
 - JWT claims: `sub` (user id), `role` (`requester` | `agent`), `exp`. Lifetime 8 hours. No refresh token.
 - Logout has no endpoint. The client drops the token.
 - Ids are integers.
-- Error body is always `{ "error": "message" }`.
-- `400` bad input, `403` wrong role or not your ticket, `404` missing.
+- Error body is always `{ "code": "<status>", "message": "..." }` — `code` is the lower_snake_case status name.
+- `400` bad input, `403` wrong role or forbidden action, `404` missing — a requester probing someone else's ticket gets `404`, not `403`.
 - No pagination, no versioning, no query language. Add pagination when a list is actually slow.
 
 ## Enums
@@ -49,7 +49,7 @@ Agent only. For the assign dropdown. Password never leaves the server.
 `200`
 
 ```json
-[{ "id": 2, "name": "Bea", "email": "b@b.co", "role": "agent" }]
+[{ "id": 2, "name": "Requester", "email": "requester@b.co", "role": "requester" }]
 ```
 
 ## Tickets

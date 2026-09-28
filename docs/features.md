@@ -13,7 +13,7 @@ Two apps: web and backend. Two roles: **requester** and **agent**.
 - Create: title, description, category, priority.
 - List: requester sees their own; agent sees all. Filter by status.
 - Detail: one ticket, its fields, its comments.
-- Status: `open` → `in progress` → `resolved` → `closed`. Agent moves status. Requester can close their own.
+- Status: `open` → `in_progress` → `resolved` → `closed`. Agent moves status. Requester can close their own.
 - Assign: agent only. Unassigned is allowed.
 
 ## Comments
