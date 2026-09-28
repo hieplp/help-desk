@@ -1,6 +1,6 @@
 # Users
 
-Not implemented yet — this is the spec. Conventions, error body, and status codes: `../api-rules.md`.
+Conventions, error body, and status codes: `../api-rules.md`.
 
 ## `GET /users`
 
@@ -11,9 +11,9 @@ Agent only. Feeds the assign dropdown. Passwords never leave the server.
 ```json
 [
   {
-    "id": 2,
-    "name": "Bea",
-    "email": "b@b.co",
+    "id": 1,
+    "name": "Agent",
+    "email": "agent@b.co",
     "role": "agent"
   }
 ]

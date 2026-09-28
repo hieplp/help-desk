@@ -4,8 +4,10 @@ Client calls go through `api.*` in `../../src/api/client.ts`. Contract: `../../h
 
 - Create: `api.post('/tickets', { title, description, category, priority })` — implemented at `/tickets/new`
   (`features/tickets/new`).
-- List with status filter: `api.get('/tickets?status=...')` — not implemented yet.
-- Detail: `api.get('/tickets/{id}')` — not implemented yet.
+- List with status filter: `api.get('/tickets?status=...')` — implemented at `/tickets`
+  (`features/tickets`, `useTickets`).
+- Detail: `api.get('/tickets/{id}')` — implemented at `/tickets/$ticketId` (`features/tickets/detail.tsx`,
+  `useTicket`).
 - Patch status/assignee: `api.patch('/tickets/{id}', { status?, assigneeId? })` — not implemented yet.
 - Add comment: `api.post('/tickets/{id}/comments', { body })` — not implemented yet.
 

@@ -3,8 +3,7 @@
 SQLite (`jdbc:sqlite:helpdesk.db`, `DB_URL` overrides). `ddl-auto: update`, no Flyway. Matches
 `docs/features.md` and `docs/api-rules.md`. Nothing else.
 
-Only `users` exists in code today. `tickets` and `comments` below are the planned schema — create them with their
-endpoints, not before.
+All three tables exist. `tickets` and `comments` came with their endpoints.
 
 ## users
 
@@ -20,10 +19,10 @@ Seeded accounts. No self-registration.
 
 `role` is stored as the enum `name()` (uppercase) via `@Enumerated(STRING)`; JSON serializes it lowercase.
 
-Seeded on startup when absent (`config/SeedUsers`): `a@b.co` / Ada / agent, `b@b.co` / Bea / requester — both password
-`secret`.
+Seeded on startup when absent (`config/SeedUsers`): `agent@b.co` / Agent / agent, `requester@b.co` /
+Requester / requester — both password `secret`.
 
-## tickets (planned)
+## tickets
 
 | column       | type                  | notes                                                              |
 |--------------|-----------------------|--------------------------------------------------------------------|
@@ -35,12 +34,12 @@ Seeded on startup when absent (`config/SeedUsers`): `a@b.co` / Ada / agent, `b@b
 | status       | varchar(20)           | not null, default `open`: `open` `in_progress` `resolved` `closed` |
 | requester_id | integer FK → users.id | not null                                                           |
 | assignee_id  | integer FK → users.id | null = unassigned                                                  |
-| created_at   | timestamp             | not null, default now()                                            |
-| updated_at   | timestamp             | not null, default now()                                            |
+| created_at   | timestamp             | not null, set at insert (`Auditable`)                            |
+| updated_at   | timestamp             | not null, set on every write (`Auditable`)                       |
 
 Indexes: `requester_id`, `assignee_id`, `status`.
 
-## comments (planned)
+## comments
 
 Append-only. No edit, no delete.
 
@@ -50,7 +49,7 @@ Append-only. No edit, no delete.
 | ticket_id  | integer FK → tickets.id | not null                |
 | author_id  | integer FK → users.id   | not null                |
 | body       | varchar(2000)           | not null                |
-| created_at | timestamp               | not null, default now() |
+| created_at | timestamp               | not null, set at insert |
 
 Index: `ticket_id`.
 

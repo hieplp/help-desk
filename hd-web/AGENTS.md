@@ -33,6 +33,7 @@ bun run generate-routes  # rebuild routeTree.gen.ts after adding a route file
 - `../docs/features.md` — scope; out-of-scope list is binding.
 - `../docs/api-rules.md` + `../hd-service/docs/api/*.md` — endpoints, enums, error shape.
 - `docs/state.md` — what may persist (session + theme only).
+- `docs/screens.md` — screens, role visibility, page states.
 - `docs/security-rules.md` — token handling, XSS, storage.
 - `docs/api-client.md` — fetch wrapper conventions.
 

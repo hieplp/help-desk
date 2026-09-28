@@ -21,6 +21,7 @@ Read before writing code:
 - [`docs/api-rules.md`](docs/api-rules.md) — endpoints, enums, error shape
 - [`docs/rules/validation-rules.md`](docs/rules/validation-rules.md) — input rules
 - [`docs/rules/git-commit-rules.md`](docs/rules/git-commit-rules.md) — Conventional Commits
+- [`docs/architecture.md`](docs/architecture.md) — system overview, config, run
 
 Behavior must differ from spec? Change the doc first.
 

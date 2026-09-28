@@ -19,18 +19,19 @@ Code lives in `security/` (`JwtService`, `JwtAuthFilter`, `ApiAuthenticationEntr
 
 ## Current caller
 
-- A controller reads the caller id with `@CurrentUser` on a `Long` parameter:
+- A controller reads the caller with `@CurrentCaller` on a `Caller` parameter:
 
   ```java
   @PostMapping("/tickets")
-  TicketResponse create(@CurrentUser Long userId, @Valid @RequestBody CreateTicketRequest body) { ... }
+  TicketResponse create(@CurrentCaller Caller caller, @Valid @RequestBody CreateTicketRequest body) { ... }
   ```
 
-- `@CurrentUser` (in `security/`) wraps `@AuthenticationPrincipal`. The principal is the user id `JwtAuthFilter`
-  sets from the token subject.
-- Unauthenticated calls never reach the controller — the entry point answers `401` first, so the id is never null
-  on a protected route.
-- Services that need the caller id take it as a parameter from the controller. They do not read
+- `@CurrentCaller` (in `security/principal`) resolves a `Caller` record — user id (token `sub`) plus
+  role (token `role` claim) — from the authentication `JwtAuthFilter` installs. Registered in
+  `config/WebConfig`.
+- Unauthenticated calls never reach the controller — the entry point answers `401` first, so the
+  caller is never null on a protected route.
+- Services that need the caller take it as a parameter from the controller. They do not read
   `SecurityContextHolder` themselves.
 
 ## Token

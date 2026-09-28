@@ -1,6 +1,7 @@
 # Tickets
 
-Not implemented yet — this is the spec. Conventions, error body, and status codes: `../api-rules.md`.
+Conventions, error body, and status codes: `../api-rules.md`.
+Implemented: `POST`, `GET` list, `GET` detail. `PATCH` and comments are planned.
 
 Ticket fields: `id`, `title`, `description`, `category`, `priority`, `status`, `requesterId`, `assigneeId` (nullable),
 `createdAt`, `updatedAt`.

@@ -26,15 +26,15 @@ JSON over HTTP. One backend. Matches `docs/features.md`. Nothing else.
 No token required.
 
 ```json
-{ "email": "a@b.co", "password": "secret" }
+{ "email": "agent@b.co", "password": "secret" }
 ```
 
 `200`
 
 ```json
 {
-  "token": "<jwt>",
-  "user": { "id": 1, "name": "Ada", "email": "a@b.co", "role": "agent" }
+  "token": { "value": "<jwt>", "expiresAt": "2026-09-22T18:00:00Z" },
+  "user": { "id": 1, "name": "Agent", "email": "agent@b.co", "role": "agent" }
 }
 ```
 
